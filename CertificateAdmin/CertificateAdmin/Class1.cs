@@ -24,7 +24,7 @@ namespace CertificateAdmin
 
         private const int CR_DISP_UNDER_SUBMISSION = 0x5;
 
-        private const int CR_OUT_BASE64 = 0x2;
+        private const int CR_OUT_BASE64 = 0x1;
 
         private const int CR_OUT_CHAIN = 0x100;
 
