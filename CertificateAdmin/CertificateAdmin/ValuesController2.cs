@@ -8,6 +8,7 @@ using CertificateAdmin;
 
 namespace CertificateAdmin
 {
+    [Authorize]
    [RoutePrefix("api/Cert")]
     public class CertController : ApiController
     {

@@ -11,14 +11,17 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using CertificateAdmin.Models;
 
+
 namespace CertificateAdmin.Providers
 {
     public class ApplicationOAuthProvider : OAuthAuthorizationServerProvider
     {
         private readonly string _publicClientId;
+      
 
         public ApplicationOAuthProvider(string publicClientId)
         {
+         
             if (publicClientId == null)
             {
                 throw new ArgumentNullException("publicClientId");
@@ -27,28 +30,29 @@ namespace CertificateAdmin.Providers
             _publicClientId = publicClientId;
         }
 
-        public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
-        {
-            var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
+        //public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
+        //    {
+        //     var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
-            ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
+        //     ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
 
-            if (user == null)
-            {
-                context.SetError("invalid_grant", "The user name or password is incorrect.");
-                return;
-            }
+        //  if (user != null)
+        // {
+        //    context.SetError("invalid_grant", "The user name or password is incorrect.");
+        //    return;
+        // }
 
-            ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
-               OAuthDefaults.AuthenticationType);
-            ClaimsIdentity cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
-                CookieAuthenticationDefaults.AuthenticationType);
+        //  ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
+        //   OAuthDefaults.AuthenticationType);
+        //  ClaimsIdentity cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
+        //   CookieAuthenticationDefaults.AuthenticationType);
 
-            AuthenticationProperties properties = CreateProperties(user.UserName);
-            AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
-            context.Validated(ticket);
-            context.Request.Context.Authentication.SignIn(cookiesIdentity);
-        }
+        //  AuthenticationProperties properties = CreateProperties(user.UserName);
+        //  AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
+        //  context.Validated(ticket);
+        //context.Request.Context.Authentication.SignIn(cookiesIdentity);
+        //}
+
 
         public override Task TokenEndpoint(OAuthTokenEndpointContext context)
         {
@@ -60,15 +64,44 @@ namespace CertificateAdmin.Providers
             return Task.FromResult<object>(null);
         }
 
+        // public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
+        //  {
+        // Resource owner password credentials does not provide a client ID.
+        //  if (context.ClientId == null)
+        //  {
+        //      context.Validated();
+        //  }
+
+        //    return Task.FromResult<object>(null);
+        //    }
+
         public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
-            // Resource owner password credentials does not provide a client ID.
-            if (context.ClientId == null)
+            string clientId;
+            string clientSecret;
+            context.TryGetFormCredentials(out clientId, out clientSecret);
+            if (clientId == "1234")
             {
-                context.Validated();
-            }
+                context.SetError("invalid_grant", "The ClientId Is Not Recognize.");
 
-            return Task.FromResult<object>(null);
+
+            }
+            else
+            {
+                context.Validated(clientId);
+            }
+           
+            return base.ValidateClientAuthentication(context);
+        }
+
+        public override Task GrantClientCredentials(OAuthGrantClientCredentialsContext context)
+        {
+           // var client = clientService.GetClient(context.ClientId);
+            var oAuthIdentity = new ClaimsIdentity(context.Options.AuthenticationType);
+            oAuthIdentity.AddClaim(new Claim(ClaimTypes.Name, "asaf"));
+            var ticket = new AuthenticationTicket(oAuthIdentity, new AuthenticationProperties());
+            context.Validated(ticket);
+            return base.GrantClientCredentials(context);
         }
 
         public override Task ValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
