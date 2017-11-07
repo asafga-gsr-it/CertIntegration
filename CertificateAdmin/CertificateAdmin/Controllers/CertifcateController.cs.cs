@@ -33,14 +33,7 @@ namespace CertificateAdmin
 
         }
 
-        //public string GetCertifcate(string hostname)
-        //{
-        //    string certID;
-        //   Certificate cert = new Certificate();
-        //    certID = cert.createCertifcate(hostname);
-        //    return certID;
-
-        //}
+       
 
         // POST api/<controller>
         // POST /api/Cert/Createreq? hostname = asaf

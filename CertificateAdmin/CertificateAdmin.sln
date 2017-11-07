@@ -5,8 +5,6 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertificateAdmin", "CertificateAdmin\CertificateAdmin.csproj", "{6A21934C-B0F3-4FAE-81A5-C4E32576210F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertificateAdmin.Tests", "CertificateAdmin.Tests\CertificateAdmin.Tests.csproj", "{BBC001DA-611C-492E-8CA0-6E18A313AAFC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{6A21934C-B0F3-4FAE-81A5-C4E32576210F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A21934C-B0F3-4FAE-81A5-C4E32576210F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A21934C-B0F3-4FAE-81A5-C4E32576210F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BBC001DA-611C-492E-8CA0-6E18A313AAFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BBC001DA-611C-492E-8CA0-6E18A313AAFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BBC001DA-611C-492E-8CA0-6E18A313AAFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BBC001DA-611C-492E-8CA0-6E18A313AAFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
