@@ -8,7 +8,7 @@ using CertificateAdmin;
 
 namespace CertificateAdmin
 {
-    [Authorize]
+  //  [Authorize]
    [RoutePrefix("api/Cert")]
     public class CertController : ApiController
     {
@@ -33,7 +33,21 @@ namespace CertificateAdmin
 
         }
 
-       
+
+        [Route("GetCert")]
+        [HttpGet]
+        //GET api/Cert/GetCert? reqid = 79
+        public string GetCertificate(int reqid)
+        {
+            string cerificate;
+            Certificate cert = new Certificate();
+            cerificate = cert.getCertificate(reqid);
+            return cerificate;
+
+
+        }
+
+
 
         // POST api/<controller>
         // POST /api/Cert/Createreq? hostname = asaf

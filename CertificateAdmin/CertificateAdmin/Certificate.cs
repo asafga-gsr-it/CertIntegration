@@ -4,10 +4,12 @@ using System.Linq;
 using System.Web;
 using CERTENROLLLib;
 using CERTCLILib;
+using CERTADMINLib;
+using System.IO;
 
 namespace CertificateAdmin
 {
-    public class Certificate
+    public  class Certificate
     {
 
         private const int CC_DEFAULTCONFIG = 0;
@@ -73,12 +75,12 @@ namespace CertificateAdmin
                 objExtensionKeyUsage.InitializeEncode(X509KeyUsageFlags.XCN_CERT_DIGITAL_SIGNATURE_KEY_USAGE | X509KeyUsageFlags.XCN_CERT_NON_REPUDIATION_KEY_USAGE |
                                                        X509KeyUsageFlags.XCN_CERT_KEY_ENCIPHERMENT_KEY_USAGE | X509KeyUsageFlags.XCN_CERT_DATA_ENCIPHERMENT_KEY_USAGE);
 
-                objPkcs10.X509Extensions.Add((CX509Extension)objExtensionKeyUsage);
-                objObjectId.InitializeFromValue("2.5.6.1.5.5.7.3.3");
-                objObjectIds.Add(objObjectId);
+               // objPkcs10.X509Extensions.Add((CX509Extension)objExtensionKeyUsage);
+               // objObjectId.InitializeFromValue("1.3.6.1.5.5.7.3.2");
+               // objObjectIds.Add(objObjectId);
 
-                objX509ExtensionEnhancedKeyUsage.InitializeEncode(objObjectIds);
-                objPkcs10.X509Extensions.Add((CX509Extension)objX509ExtensionEnhancedKeyUsage);
+              //  objX509ExtensionEnhancedKeyUsage.InitializeEncode(objObjectIds);
+               // objPkcs10.X509Extensions.Add((CX509Extension)objX509ExtensionEnhancedKeyUsage);
 
                 objDN.Encode("CN=" + hostName, X500NameFlags.XCN_CERT_NAME_STR_NONE);
                 objPkcs10.Subject = objDN;
@@ -151,6 +153,38 @@ namespace CertificateAdmin
                 strDisposition = objCertRequest.GetDispositionMessage();
 
                 return strDisposition;
+            }
+
+            catch (Exception ex)
+
+            {
+
+                return ex.Message;
+
+            }
+
+        }
+
+        public string getCertificate(int requestID)
+        {
+
+            int iDisposition;
+            string strCAConfig;
+            string pstrCertificate;
+            pstrCertificate = null;
+
+            CCertConfig objCertConfig = new CCertConfig();
+            CCertRequest objCertRequest = new CCertRequest();
+            CCertAdmin objCertAdmin = new CCertAdmin();
+            try
+            {
+                strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);
+                objCertAdmin.ResubmitRequest(strCAConfig,requestID);
+                iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
+                pstrCertificate = objCertRequest.GetCertificate(CR_OUT_BASE64);
+               
+             //   File.WriteAllBytes(@"c:\test.cer", Convert.FromBase64String(pstrCertificate));                   
+                return pstrCertificate;
             }
 
             catch (Exception ex)

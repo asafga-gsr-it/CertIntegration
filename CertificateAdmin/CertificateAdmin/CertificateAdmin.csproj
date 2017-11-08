@@ -317,6 +317,15 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <COMReference Include="CERTADMINLib">
+      <Guid>{35DE99A0-7FB6-11D0-8817-00A0C903B83C}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
     <COMReference Include="CERTCLILib">
       <Guid>{372FCE32-4324-11D0-8810-00A0C903B83C}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -357,11 +366,10 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50026</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50026/</IISUrl>
+          <IISUrl>http://52.87.213.153:50026/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
+          <CustomServerUrl>http://www.asafdevtst.com:8080</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
