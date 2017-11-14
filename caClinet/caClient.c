@@ -67,7 +67,7 @@ char * GetCert(int reqid)
     }
     else
     {
-        ca=chunk.memory;
+        cert=chunk.memory;
     }
  
   /* cleanup curl stuff */ 
