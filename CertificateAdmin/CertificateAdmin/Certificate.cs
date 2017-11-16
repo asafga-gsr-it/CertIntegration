@@ -30,6 +30,7 @@ namespace CertificateAdmin
 
         private const int CR_OUT_CHAIN = 0x100;
 
+        // create the certifcate request
         public string createCertifcate(string hostName)
         {
 
@@ -62,7 +63,7 @@ namespace CertificateAdmin
 
             try
             {
-
+                //create the private key (CX509CertificateRequestPkcs10 will initilizae from the private key)
                 objCSP.InitializeFromName("Microsoft Enhanced Cryptographic Provider v1.0");
                 objCSPs.Add(objCSP);
                 objPrivateKey.Length = 1024;
@@ -71,6 +72,9 @@ namespace CertificateAdmin
                 objPrivateKey.MachineContext = false;
                 objPrivateKey.CspInformations = objCSPs;
                 objPrivateKey.Create();
+
+
+                //create of the pkc 10 object from the privaet key
                 objPkcs10.InitializeFromPrivateKey(X509CertificateEnrollmentContext.ContextUser, objPrivateKey, "");
                 objExtensionKeyUsage.InitializeEncode(X509KeyUsageFlags.XCN_CERT_DIGITAL_SIGNATURE_KEY_USAGE | X509KeyUsageFlags.XCN_CERT_NON_REPUDIATION_KEY_USAGE |
                                                        X509KeyUsageFlags.XCN_CERT_KEY_ENCIPHERMENT_KEY_USAGE | X509KeyUsageFlags.XCN_CERT_DATA_ENCIPHERMENT_KEY_USAGE);
@@ -88,6 +92,7 @@ namespace CertificateAdmin
 
                 objEnroll.InitializeFromRequest(objPkcs10);
 
+                //Certifcate Request Creation 
                 CertifcateStr = objEnroll.CreateRequest(EncodingType.XCN_CRYPT_STRING_BASE64);
 
                 return CertifcateStr;
@@ -103,11 +108,11 @@ namespace CertificateAdmin
         }
 
 
-
+        //submit the request  that created in the createCertifcate to the CA
         public int submitRequest(string certrequest)
         {
 
-
+            
             CCertConfig objCertConfig = new CCertConfig();
             CCertRequest objCertRequest = new CCertRequest();
 
@@ -119,9 +124,13 @@ namespace CertificateAdmin
 
             try
             {
-
+                //connect to the ca
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);
+
+                //submit the certiface request to the ca
                 iDisposition = objCertRequest.Submit(CR_IN_BASE64, certrequest, null, strCAConfig);
+
+                //get the requestid that was created -the certifacte is in pending status
                 requestID = objCertRequest.GetRequestId();
 
 
@@ -137,7 +146,8 @@ namespace CertificateAdmin
             }
 
         }
-
+        
+        //get the certifacte status from the ca
         public string retrieveStatus(int requestID)
         {
 
@@ -148,8 +158,11 @@ namespace CertificateAdmin
             CCertRequest objCertRequest = new CCertRequest();
             try
             {
+                //connect to the ca
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);
-                iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
+
+                //retrive the certifcate status  from the ca in code
+                iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);             
                 strDisposition = objCertRequest.GetDispositionMessage();
 
                 return strDisposition;
@@ -165,6 +178,7 @@ namespace CertificateAdmin
 
         }
 
+        //get the issue Certificate
         public string getCertificate(int requestID)
         {
 
@@ -178,8 +192,11 @@ namespace CertificateAdmin
             CCertAdmin objCertAdmin = new CCertAdmin();
             try
             {
+                //connect to the ca
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);
+                //automatic issue the pending Certificate
                 objCertAdmin.ResubmitRequest(strCAConfig,requestID);
+                //retrive the Certificate 
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
                 pstrCertificate = objCertRequest.GetCertificate(CR_OUT_BASE64);
                

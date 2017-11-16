@@ -18,7 +18,7 @@ namespace CertificateAdmin
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/<controller>/5
+        // return the certifacte status
         // GET api/Cert/GetStatus?reqid=79
         [Route("GetStatus")]
         [HttpGet]
@@ -36,6 +36,7 @@ namespace CertificateAdmin
 
         [Route("GetCert")]
         [HttpGet]
+        //return the issue certifcate 
         //GET api/Cert/GetCert? reqid = 79
         public string GetCertificate(int reqid)
         {
@@ -49,7 +50,7 @@ namespace CertificateAdmin
 
 
 
-        // POST api/<controller>
+        // create certifcate request
         // POST /api/Cert/Createreq? hostname = asaf
         [Route("Createreq")]
         [HttpPost]
