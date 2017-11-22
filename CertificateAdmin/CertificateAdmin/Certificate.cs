@@ -26,7 +26,7 @@ namespace CertificateAdmin
 
         private const int CR_DISP_UNDER_SUBMISSION = 0x5;
 
-        private const int CR_OUT_BASE64 = 0x1;
+        private const int CR_OUT_BASE64 = 0x0;
 
         private const int CR_OUT_CHAIN = 0x100;
 
@@ -199,7 +199,8 @@ namespace CertificateAdmin
                 //retrive the Certificate 
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
                 pstrCertificate = objCertRequest.GetCertificate(CR_OUT_BASE64);
-               
+                pstrCertificate=pstrCertificate.Replace("\r\n","");
+                   
              //   File.WriteAllBytes(@"c:\test.cer", Convert.FromBase64String(pstrCertificate));                   
                 return pstrCertificate;
             }
