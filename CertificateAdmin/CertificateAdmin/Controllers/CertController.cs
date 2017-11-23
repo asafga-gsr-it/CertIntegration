@@ -38,12 +38,14 @@ namespace CertificateAdmin
         [HttpGet]
         //return the issue certifcate 
         //GET api/Cert/GetCert? reqid = 79
-        public string GetCertificate(int reqid)
+        public HttpResponseMessage GetCertificate(int reqid)
         {
             string cerificate;
             Certificate cert = new Certificate();
             cerificate = cert.getCertificate(reqid);
-            return cerificate;
+            var resp = new HttpResponseMessage(HttpStatusCode.OK);
+            resp.Content = new StringContent(cerificate, System.Text.Encoding.UTF8, "text/plain");
+            return resp;
 
 
         }

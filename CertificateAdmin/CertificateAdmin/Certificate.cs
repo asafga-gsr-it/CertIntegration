@@ -199,9 +199,8 @@ namespace CertificateAdmin
                 //retrive the Certificate 
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
                 pstrCertificate = objCertRequest.GetCertificate(CR_OUT_BASE64);
-                pstrCertificate=pstrCertificate.Replace("\r\n","");
-                   
-             //   File.WriteAllBytes(@"c:\test.cer", Convert.FromBase64String(pstrCertificate));                   
+               // pstrCertificate = pstrCertificate.Replace("", "");
+                //File.WriteAllBytes(@"c:\test.cer", Convert.FromBase64String(pstrCertificate));                   
                 return pstrCertificate;
             }
 
