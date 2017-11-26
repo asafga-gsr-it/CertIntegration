@@ -10,6 +10,7 @@ struct MemoryStruct {
 };
 
 
+
  
 static size_t
 WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
@@ -39,6 +40,8 @@ char* concat(const char *s1, const char *s2)
     strcat(result, s2);
     return result;
 }
+
+
  
 char * GetCert(int reqid)
 {
@@ -50,13 +53,13 @@ char * GetCert(int reqid)
     struct MemoryStruct chunk;
     chunk.memory = malloc(1);  /* will be grown as needed by the realloc above */ 
     chunk.size = 0;    /* no data at this point */ 
-    char * streqid;
+    char * streqid;    
     curl_global_init(CURL_GLOBAL_ALL);
  
   /* init the curl session */ 
     curl_handle = curl_easy_init();
     sprintf(str, "%d", reqid);
-    url=concat("http://52.207.253.27:50026/api/Cert/GetCert?reqid=",str);    
+    url=concat("http://34.201.109.145:50026/api/Cert/GetCert?reqid=",str);    
     /* specify URL to get */ 
     curl_easy_setopt(curl_handle, CURLOPT_URL,url);
  
@@ -81,7 +84,7 @@ char * GetCert(int reqid)
     }
     else
     {
-        cert=chunk.memory;
+        cert= chunk.memory;
     }
  
   /* cleanup curl stuff */ 
@@ -111,7 +114,7 @@ int  requestCert(char* hostname)
 /* init the curl session */ 
   curl_handle = curl_easy_init();
 
-  url= concat("http://52.207.253.27:50026/api/Cert/Createreq?hostname=",hostname);
+  url= concat("http://34.201.109.145:50026/api/Cert/Createreq?hostname=",hostname);
 
 
 
@@ -153,12 +156,28 @@ int  requestCert(char* hostname)
   return reqid;
 }
  
+
 int main(void)
 {
     int  reqid;
+    int i;
+    int j;
     char * cert;
-    reqid=requestCert("ironscriptFix");
+    char * certfix;
+     FILE *fptr;
+     FILE *fp;
+
+ 
+    reqid=requestCert("certvalidationFix");
     cert=GetCert(reqid);
-    printf("%s\n", cert);
+    fptr = fopen("cert.cer", "w");
+    if(fptr == NULL)
+     {
+      printf("Error!");
+      return 1;
+      }
+    fprintf(fptr,"%s\r\n",cert);
+    fclose(fptr);
+
     return 0;
 }
