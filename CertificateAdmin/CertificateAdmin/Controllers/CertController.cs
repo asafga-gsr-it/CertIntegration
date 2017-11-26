@@ -18,7 +18,7 @@ namespace CertificateAdmin
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/<controller>/5
+        // return the certifacte status
         // GET api/Cert/GetStatus?reqid=79
         [Route("GetStatus")]
         [HttpGet]
@@ -36,20 +36,23 @@ namespace CertificateAdmin
 
         [Route("GetCert")]
         [HttpGet]
+        //return the issue certifcate 
         //GET api/Cert/GetCert? reqid = 79
-        public string GetCertificate(int reqid)
+        public HttpResponseMessage GetCertificate(int reqid)
         {
             string cerificate;
             Certificate cert = new Certificate();
             cerificate = cert.getCertificate(reqid);
-            return cerificate;
+            var resp = new HttpResponseMessage(HttpStatusCode.OK);
+            resp.Content = new StringContent(cerificate, System.Text.Encoding.UTF8, "text/plain");
+            return resp;
 
 
         }
 
 
 
-        // POST api/<controller>
+        // create certifcate request
         // POST /api/Cert/Createreq? hostname = asaf
         [Route("Createreq")]
         [HttpPost]
