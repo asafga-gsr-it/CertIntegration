@@ -115,6 +115,7 @@ namespace CertificateAdmin
             
             CCertConfig objCertConfig = new CCertConfig();
             CCertRequest objCertRequest = new CCertRequest();
+            CCertAdmin objCertAdmin = new CCertAdmin();
 
             string strCAConfig;
             int iDisposition;
@@ -132,7 +133,7 @@ namespace CertificateAdmin
 
                 //get the requestid that was created -the certifacte is in pending status
                 requestID = objCertRequest.GetRequestId();
-
+                objCertAdmin.ResubmitRequest(strCAConfig, requestID);
 
                 return objCertRequest.GetRequestId();
             }
@@ -148,12 +149,12 @@ namespace CertificateAdmin
         }
         
         //get the certifacte status from the ca
-        public string retrieveStatus(int requestID)
+        public int retrieveStatus(int requestID)
         {
 
             int iDisposition;
             string strCAConfig;
-            string strDisposition;
+           // string strDisposition;
             CCertConfig objCertConfig = new CCertConfig();
             CCertRequest objCertRequest = new CCertRequest();
             try
@@ -163,16 +164,16 @@ namespace CertificateAdmin
 
                 //retrive the certifcate status  from the ca in code
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);             
-                strDisposition = objCertRequest.GetDispositionMessage();
+               // strDisposition = objCertRequest.GetDispositionMessage();
 
-                return strDisposition;
+                return iDisposition;
             }
 
             catch (Exception ex)
 
             {
 
-                return ex.Message;
+                return -1;
 
             }
 
@@ -189,13 +190,13 @@ namespace CertificateAdmin
 
             CCertConfig objCertConfig = new CCertConfig();
             CCertRequest objCertRequest = new CCertRequest();
-            CCertAdmin objCertAdmin = new CCertAdmin();
+            
             try
             {
                 //connect to the ca
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);
                 //automatic issue the pending Certificate
-                objCertAdmin.ResubmitRequest(strCAConfig,requestID);
+               
                 //retrive the Certificate 
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
                 pstrCertificate = objCertRequest.GetCertificate(CR_OUT_BASE64);

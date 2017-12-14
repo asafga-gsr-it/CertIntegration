@@ -23,14 +23,14 @@ namespace CertificateAdmin
         [Route("GetStatus")]
         [HttpGet]
 
-        public string GetCertStatus(int reqid)
+        public int GetCertStatus(int reqid)
         {
-            string status;
+            int  status;
             Certificate cert = new Certificate();
             status=cert.retrieveStatus(reqid);
+          //  var resp = new HttpResponseMessage(HttpStatusCode.OK);
+//resp.Content = new StringContent(status, System.Text.Encoding.UTF8, "text/plain");
             return status;
-
-
         }
 
 
