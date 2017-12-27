@@ -2,11 +2,13 @@
 #include <iostream>
 #include <string>
 #include <curl/curl.h>
+#include <sys/stat.h>
 using namespace std;
 
+   
+    std::string url;
+    std::string fileloc;
 
-   char url[100];
-   char fileloc[100];
 //copy the value return from the HTTP Get to the memorty
 size_t WriteCallback(char *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -49,7 +51,7 @@ int requestCert(std::string   hostname)
     return reqid;
 }
 
-int  getRuestStatus(int   reqid)
+int  getCertStatus(int   reqid)
 {
  curl_global_init(CURL_GLOBAL_ALL);
 
@@ -99,6 +101,7 @@ void getCertificate(int   reqid)
     curl_easy_perform(easyhandle);
   
     /*open A file to Write -- cert.cert*/
+
     std::ofstream out(fileloc);
 
     /*Write The Certificate To the File*/
@@ -115,21 +118,46 @@ int main(int argc, char * argv[])
 {
   int reqid;
   int  status;
- 
-  
+  char urltmp[100];
+  char fileloctmp[100];
 
-  ifstream in("conf.txt");
+  struct stat st;
+
+
+  if (argv[2]!=NULL) 
+  {
+     reqid=std::atoi(argv[2]);
+  }
+  ifstream in("caw.conf");
   if(!in) {
     cout << "Cannot open input file.\n";
     return 1;
   }
   
-    in.getline(url, 100); 
-    in.getline(fileloc, 100); 
+    in.getline(urltmp, 100); 
+    in.getline(fileloctmp, 100); 
     in.close();
-    reqid=requestCert(argv[1]);
-    status=getRuestStatus(reqid);
-  
+    url=urltmp;
+    fileloc=fileloctmp;
+    fileloc+=argv[1];
+    fileloc+=".cer";
+    url=url.substr(url.find("-") + 1);
+    fileloc=fileloc.substr(fileloc.find("-") + 1) ;
+      if(stat(fileloc.c_str(),&st) == 0)
+      {
+        cout<<"The Certificate Is allready Issued-"<<fileloc.c_str()<<endl;
+        return 0;
+      }
+
+
+    if (argv[2]==NULL) 
+    {
+       
+        reqid=requestCert(argv[1]);
+    }
+      
+
+    status=getCertStatus(reqid);
     if (status==3) 
     {
         getCertificate(reqid);
@@ -137,7 +165,7 @@ int main(int argc, char * argv[])
 
     else
     {
-        cout<<"The Certificate Is Yet Not Issued"<<endl;
+        cout<<"The Certificate ReqId-"<<reqid<<" Is Yet Not Issued"<<endl;
     }
 
     return 0;
