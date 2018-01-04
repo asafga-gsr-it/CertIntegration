@@ -6,6 +6,7 @@ using CERTENROLLLib;
 using CERTCLILib;
 using CERTADMINLib;
 using System.IO;
+using System.Data.SQLite;
 
 namespace CertificateAdmin
 {
@@ -29,6 +30,8 @@ namespace CertificateAdmin
         private const int CR_OUT_BASE64 = 0x0;
 
         private const int CR_OUT_CHAIN = 0x100;
+
+        public string CertValue { get; set; }
 
         // create the certifcate request
         public string createCertifcate(string hostName)
@@ -112,7 +115,7 @@ namespace CertificateAdmin
         public int submitRequest(string certrequest)
         {
 
-            
+            SQLiteConnection m_dbConnection;
             CCertConfig objCertConfig = new CCertConfig();
             CCertRequest objCertRequest = new CCertRequest();
             CCertAdmin objCertAdmin = new CCertAdmin();
@@ -134,7 +137,7 @@ namespace CertificateAdmin
                 //get the requestid that was created -the certifacte is in pending status
                 requestID = objCertRequest.GetRequestId();
                 objCertAdmin.ResubmitRequest(strCAConfig, requestID);
-
+            
                 return objCertRequest.GetRequestId();
             }
 
@@ -200,9 +203,9 @@ namespace CertificateAdmin
                 //retrive the Certificate 
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
                 pstrCertificate = objCertRequest.GetCertificate(CR_OUT_BASE64);
-               // pstrCertificate = pstrCertificate.Replace("", "");
-                //File.WriteAllBytes(@"c:\test.cer", Convert.FromBase64String(pstrCertificate));                   
-                return pstrCertificate;
+                Certificate cert = new Certificate { CertValue = pstrCertificate };
+                string certJson = Newtonsoft.Json.JsonConvert.SerializeObject(cert);           
+                return certJson;
             }
 
             catch (Exception ex)

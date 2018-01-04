@@ -44,7 +44,8 @@ namespace CertificateAdmin
             Certificate cert = new Certificate();
             cerificate = cert.getCertificate(reqid);
             var resp = new HttpResponseMessage(HttpStatusCode.OK);
-            resp.Content = new StringContent(cerificate, System.Text.Encoding.UTF8, "text/plain");
+            // resp.Content = new StringContent(cerificate, System.Text.Encoding.UTF8, "text/plain");
+            resp.Content = new StringContent(cerificate, System.Text.Encoding.UTF8, "application/json");            
             return resp;
 
 

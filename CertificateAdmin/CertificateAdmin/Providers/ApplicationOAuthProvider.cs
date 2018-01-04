@@ -11,7 +11,6 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 
 
-
 namespace CertificateAdmin.Providers
 {
     public class ApplicationOAuthProvider : OAuthAuthorizationServerProvider
@@ -41,6 +40,7 @@ namespace CertificateAdmin.Providers
             }
 
             return Task.FromResult<object>(null);
+         
         }
 
  
