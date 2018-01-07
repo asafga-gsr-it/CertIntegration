@@ -6,7 +6,7 @@ using CERTENROLLLib;
 using CERTCLILib;
 using CERTADMINLib;
 using System.IO;
-using System.Data.SQLite;
+using SQLiteSamples;
 
 namespace CertificateAdmin
 {
@@ -30,6 +30,8 @@ namespace CertificateAdmin
         private const int CR_OUT_BASE64 = 0x0;
 
         private const int CR_OUT_CHAIN = 0x100;
+
+        SqlLite sql = new SqlLite();
 
         public string CertValue { get; set; }
 
@@ -97,6 +99,7 @@ namespace CertificateAdmin
 
                 //Certifcate Request Creation 
                 CertifcateStr = objEnroll.CreateRequest(EncodingType.XCN_CRYPT_STRING_BASE64);
+                       
 
                 return CertifcateStr;
 
@@ -112,10 +115,10 @@ namespace CertificateAdmin
 
 
         //submit the request  that created in the createCertifcate to the CA
-        public int submitRequest(string certrequest)
+        public int submitRequest(string certrequest,string hostname)
         {
 
-            SQLiteConnection m_dbConnection;
+          
             CCertConfig objCertConfig = new CCertConfig();
             CCertRequest objCertRequest = new CCertRequest();
             CCertAdmin objCertAdmin = new CCertAdmin();
@@ -136,16 +139,19 @@ namespace CertificateAdmin
 
                 //get the requestid that was created -the certifacte is in pending status
                 requestID = objCertRequest.GetRequestId();
-                objCertAdmin.ResubmitRequest(strCAConfig, requestID);
-            
-                return objCertRequest.GetRequestId();
+                SqlLite sql = new SqlLite();
+                sql.connectToDatabase();
+                sql.insertTable(hostname, iDisposition, requestID);
+                sql.closeConnection();
+             // objCertAdmin.ResubmitRequest(strCAConfig, requestID);               
+                return requestID;
             }
 
             catch (Exception ex)
 
             {
                 errorStatus = ex.Message;
-                return -1;
+                return 0;
 
             }
 
@@ -166,9 +172,13 @@ namespace CertificateAdmin
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);
 
                 //retrive the certifcate status  from the ca in code
-                iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);             
-               // strDisposition = objCertRequest.GetDispositionMessage();
-
+                iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
+                // strDisposition = objCertRequest.GetDispositionMessage();
+                SqlLite sql = new SqlLite();
+                sql.connectToDatabase();
+                sql.updateTable(iDisposition, requestID);
+                sql.printTable();
+                sql.closeConnection();
                 return iDisposition;
             }
 
@@ -176,7 +186,7 @@ namespace CertificateAdmin
 
             {
 
-                return -1;
+                return 0;
 
             }
 

@@ -63,7 +63,7 @@ namespace CertificateAdmin
             int requestID;
             Certificate cert = new Certificate();
             CertID = cert.createCertifcate(hostname);
-            requestID = cert.submitRequest(CertID);
+            requestID = cert.submitRequest(CertID, hostname);
             return requestID;
 
         }
