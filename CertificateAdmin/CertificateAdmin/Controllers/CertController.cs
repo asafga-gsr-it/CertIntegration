@@ -63,6 +63,15 @@ namespace CertificateAdmin
             int requestID;
             Certificate cert = new Certificate();
             CertID = cert.createCertifcate(hostname);
+            if (String.Equals(CertID,"Exsits")==true)
+            {
+                return -2;
+            }
+
+            if (String.Equals(CertID, "Issued") == true)
+            {
+                return -3;
+            }
             requestID = cert.submitRequest(CertID, hostname);
             return requestID;
 
