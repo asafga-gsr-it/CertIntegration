@@ -47,7 +47,7 @@ int requestCert(std::string   hostname)
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
-    curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 30L);
+    curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 60L);
     /*Perform Http Rest Post */
     res=curl_easy_perform(easyhandle);
     if (res==0)
@@ -124,7 +124,7 @@ int  getCertStatus(int   reqid)
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);    
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
-    curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 30L);
+    curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 60L);
     /*Perform Http Rest Get */
     res=curl_easy_perform(easyhandle);
     if (res==0)
@@ -159,7 +159,7 @@ int  getCertificate(int   reqid)
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);    
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
-    curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 30L);
+    curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 60L);
 
     /*Perform Http Rest Get */
     res=curl_easy_perform(easyhandle);
@@ -174,6 +174,7 @@ int  getCertificate(int   reqid)
       out << cert;
       /*Close the File */
       out.close();
+      cout<<"Certificate is at:"<<fileloc<<endl;
       return 0;
     }
     return -1;
@@ -244,11 +245,21 @@ int main(int argc, char * argv[])
     {
        
         reqid=requestCert(argv[1]);
-         if (reqid==-1)
+        if (reqid==-1)
          {
             cout<<"There is network Problem"<<endl;
             return 1;
 
+         }
+          else if (reqid==-2)
+         {
+            cout<<"The Certificate Was Allreday Requested"<<endl;
+            return 1;
+         }
+            else if (reqid==-3)
+         {
+            cout<<"The Certificate Was Allreday Issued"<<endl;
+            return 1;
          }
           else if (reqid==0)
          {
@@ -268,6 +279,11 @@ int main(int argc, char * argv[])
           return 1;
         }
     
+    }
+    else if (status==-3)
+    {
+       cout<<"The Certificate Was Allreday Issued and used "<<endl;
+       return 1;
     }
     else if (status==-1)
     {
