@@ -28,13 +28,16 @@ int requestCert(std::string   hostname)
     CURL* easyhandle = curl_easy_init();  /* init the curl session */ 
     std::string readBuffer;
     std::string serverurl;
+    int res;
    
     const char *data = "data to send";
   
     serverurl=url;
-
+    
    //init the Url -For Create Ca Request 
     serverurl+= "/Createreq?hostname=" + hostname;
+
+    
       /* specify URL to get */ 
     curl_easy_setopt(easyhandle, CURLOPT_URL,serverurl.c_str()); 
 
@@ -44,13 +47,16 @@ int requestCert(std::string   hostname)
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
-
+    curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 30L);
     /*Perform Http Rest Post */
-    curl_easy_perform(easyhandle);
-
-    /*Save the RequestID that was created in the ca of microsot we will use the reqid to get the certficate when it will be issued*/
-    int reqid=std::atoi(readBuffer.c_str());   
-    return reqid;
+    res=curl_easy_perform(easyhandle);
+    if (res==0)
+    {
+      /*Save the RequestID that was created in the ca of microsot we will use the reqid to get the certficate when it will be issued*/
+      int reqid=std::atoi(readBuffer.c_str());   
+      return reqid;
+    }
+    return -1;
 }
 
 int requestToken(int clientid)
@@ -63,6 +69,7 @@ int requestToken(int clientid)
     json_error_t error;
     json_t *root;
     const char * token;
+    int res;
    
     const char *data = "client_id=1234&grant_type=client_credentials";
   
@@ -79,9 +86,14 @@ int requestToken(int clientid)
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
-
+    curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 30L);
     /*Perform Http Rest Post */
-    curl_easy_perform(easyhandle);
+    res =curl_easy_perform(easyhandle);
+    if (res!=0)
+    {
+       return -1;
+    }
+  
     root = json_loads(readBuffer.c_str(), 0, &error);
     token = json_string_value(json_object_get(root, "access_token"));
     if (token==NULL) 
@@ -89,8 +101,7 @@ int requestToken(int clientid)
       token = json_string_value(json_object_get(root, "error_description"));
     }
     cout<<token<<endl;
-    /*Save the RequestID that was created in the ca of microsot we will use the reqid to get the certficate when it will be issued*/
-  //  int reqid=std::atoi(readBuffer.c_str());   
+
     return 1;
 }
 
@@ -102,6 +113,7 @@ int  getCertStatus(int   reqid)
     std::string readBuffer;
     std::string serverurl;
     int status;
+    int res;
 
     serverurl=url;
     /*init the Url -For Getting the  Ca */
@@ -112,23 +124,28 @@ int  getCertStatus(int   reqid)
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);    
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
-
+    curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 30L);
     /*Perform Http Rest Get */
-    curl_easy_perform(easyhandle);
-   // cout<<readBuffer.c_str()<<endl;
-    status=std::atoi(readBuffer.c_str());   
-    return status;
+    res=curl_easy_perform(easyhandle);
+    if (res==0)
+    {
+      status=std::atoi(readBuffer.c_str());   
+      return status;
+    }
+
+        return -1;
     
 }
 
 
 /*Function to Return the Certificate That Was Issued by Microsoft CA */
-void getCertificate(int   reqid)
+int  getCertificate(int   reqid)
 {
    const char * cert;
     json_error_t error;
   json_t *root;
  curl_global_init(CURL_GLOBAL_ALL);
+ int res;
 
     CURL* easyhandle = curl_easy_init(); /* init the curl session */ 
     std::string readBuffer;
@@ -142,21 +159,24 @@ void getCertificate(int   reqid)
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);    
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
+    curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 30L);
 
     /*Perform Http Rest Get */
-    curl_easy_perform(easyhandle);
+    res=curl_easy_perform(easyhandle);
 
-    root = json_loads(readBuffer.c_str(), 0, &error);
-    cert = json_string_value(json_object_get(root, "CertValue"));
-    /*open A file to Write -- cert.cert*/
-
-    std::ofstream out(fileloc);
-
-    /*Write The Certificate To the File*/
-    out << cert;
-    /*Close the File */
-    out.close();
-    
+    if (res==0) 
+    {
+      root = json_loads(readBuffer.c_str(), 0, &error);
+      cert = json_string_value(json_object_get(root, "CertValue"));
+      /*open A file to Write -- cert.cert*/
+      std::ofstream out(fileloc);
+      /*Write The Certificate To the File*/
+      out << cert;
+      /*Close the File */
+      out.close();
+      return 0;
+    }
+    return -1;
 }
 
 
@@ -167,8 +187,10 @@ int main(int argc, char * argv[])
  
   int reqid;
   int  status;
+  int certstatus;
   const char * urltmp;
   const char *  fileloctmp;
+  int token;
 
   struct stat st;
   FILE* f;
@@ -182,7 +204,14 @@ int main(int argc, char * argv[])
   {
      reqid=std::atoi(argv[2]);
   }
-    requestToken(1234);
+   /* token=requestToken(1234);
+    if (token==-1)
+     {
+       cout<<"problem getting token"<<endl;
+       return -1;
+     } */
+    
+
     f = fopen ("caw.conf" , "r");
   //ifstream in("caw.conf");
  // if(!in) {
@@ -215,15 +244,36 @@ int main(int argc, char * argv[])
     {
        
         reqid=requestCert(argv[1]);
+         if (reqid==-1)
+         {
+            cout<<"There is network Problem"<<endl;
+            return 1;
+
+         }
+          else if (reqid==0)
+         {
+            cout<<"The Certificate Was Not Create Due To a Problem"<<endl;
+            return 1;
+         }
     }
       
 
     status=getCertStatus(reqid);
     if (status==3) 
     {
-        getCertificate(reqid);
+        certstatus=getCertificate(reqid);
+        if (certstatus==-1)
+        {
+          cout<<"There is network Problem"<<endl;
+          return 1;
+        }
+    
     }
-
+    else if (status==-1)
+    {
+       cout<<"There is network Problem"<<endl;
+       return 1;
+    }
     else
     {
         cout<<"The Certificate ReqId-"<<reqid<<" Is Yet Not Issued"<<endl;
