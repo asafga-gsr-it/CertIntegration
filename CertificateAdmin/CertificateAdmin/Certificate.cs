@@ -7,6 +7,7 @@ using CERTCLILib;
 using CERTADMINLib;
 using System.IO;
 using SQLiteSamples;
+//using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateAdmin
 {
@@ -68,6 +69,20 @@ namespace CertificateAdmin
 
             try
             {
+
+                SqlLite sql = new SqlLite();
+                sql.connectToDatabase();
+                if (sql.checkCertExsits(hostName)==1)
+                {
+                    sql.closeConnection();
+                    return "Exsits";
+                }
+
+                if (sql.checkCertExsits(hostName) == 2)
+                {
+                    sql.closeConnection();
+                    return "Issued";
+                }
                 //create the private key (CX509CertificateRequestPkcs10 will initilizae from the private key)
                 objCSP.InitializeFromName("Microsoft Enhanced Cryptographic Provider v1.0");
                 objCSPs.Add(objCSP);
@@ -93,14 +108,13 @@ namespace CertificateAdmin
 
                 objDN.Encode("CN=" + hostName, X500NameFlags.XCN_CERT_NAME_STR_NONE);
                 objPkcs10.Subject = objDN;
-
+           
 
                 objEnroll.InitializeFromRequest(objPkcs10);
-
-                //Certifcate Request Creation 
-                CertifcateStr = objEnroll.CreateRequest(EncodingType.XCN_CRYPT_STRING_BASE64);
-                       
-
+       
+                            //Certifcate Request Creation 
+                            CertifcateStr = objEnroll.CreateRequest(EncodingType.XCN_CRYPT_STRING_BASE64);
+                
                 return CertifcateStr;
 
             }
@@ -139,11 +153,13 @@ namespace CertificateAdmin
 
                 //get the requestid that was created -the certifacte is in pending status
                 requestID = objCertRequest.GetRequestId();
+
                 SqlLite sql = new SqlLite();
                 sql.connectToDatabase();
                 sql.insertTable(hostname, iDisposition, requestID);
                 sql.closeConnection();
-             // objCertAdmin.ResubmitRequest(strCAConfig, requestID);               
+           //   objCertAdmin.ResubmitRequest(strCAConfig, requestID);
+              
                 return requestID;
             }
 
@@ -168,16 +184,25 @@ namespace CertificateAdmin
             CCertRequest objCertRequest = new CCertRequest();
             try
             {
+
+                SqlLite sql = new SqlLite();
+                sql.connectToDatabase();
+                if (sql.checkcertFlag(requestID))
+                {
+                    sql.closeConnection();
+                    return -3;
+                }
+                sql.closeConnection();
+
                 //connect to the ca
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);
 
                 //retrive the certifcate status  from the ca in code
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
                 // strDisposition = objCertRequest.GetDispositionMessage();
-                SqlLite sql = new SqlLite();
+                sql = new SqlLite();
                 sql.connectToDatabase();
                 sql.updateTable(iDisposition, requestID);
-                sql.printTable();
                 sql.closeConnection();
                 return iDisposition;
             }
@@ -199,6 +224,7 @@ namespace CertificateAdmin
             int iDisposition;
             string strCAConfig;
             string pstrCertificate;
+            SqlLite sql = new SqlLite();
             pstrCertificate = null;
 
             CCertConfig objCertConfig = new CCertConfig();
@@ -213,6 +239,8 @@ namespace CertificateAdmin
                 //retrive the Certificate 
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
                 pstrCertificate = objCertRequest.GetCertificate(CR_OUT_BASE64);
+                sql.connectToDatabase(); 
+                sql.updateCertInfo(pstrCertificate, requestID);      
                 Certificate cert = new Certificate { CertValue = pstrCertificate };
                 string certJson = Newtonsoft.Json.JsonConvert.SerializeObject(cert);           
                 return certJson;
