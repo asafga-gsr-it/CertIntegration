@@ -71,16 +71,17 @@ namespace CertificateAdmin
             {
 
                 SqlLite sql = new SqlLite();
-                sql.connectToDatabase();
+           
+               
                 if (sql.checkCertExsits(hostName)==1)
                 {
-                    sql.closeConnection();
+                   
                     return "Exsits";
                 }
 
                 if (sql.checkCertExsits(hostName) == 2)
                 {
-                    sql.closeConnection();
+                  
                     return "Issued";
                 }
                 //create the private key (CX509CertificateRequestPkcs10 will initilizae from the private key)
@@ -155,9 +156,7 @@ namespace CertificateAdmin
                 requestID = objCertRequest.GetRequestId();
 
                 SqlLite sql = new SqlLite();
-                sql.connectToDatabase();
                 sql.insertTable(hostname, iDisposition, requestID);
-                sql.closeConnection();
            //   objCertAdmin.ResubmitRequest(strCAConfig, requestID);
               
                 return requestID;
@@ -174,7 +173,7 @@ namespace CertificateAdmin
         }
         
         //get the certifacte status from the ca
-        public int retrieveStatus(int requestID)
+        public int retrieveStatus(int requestID,string hostname)
         {
 
             int iDisposition;
@@ -186,13 +185,19 @@ namespace CertificateAdmin
             {
 
                 SqlLite sql = new SqlLite();
-                sql.connectToDatabase();
+
+                if (sql.checkHostnameWithreqID(requestID, hostname))
+                {
+
+                    return -6;
+                }
+
                 if (sql.checkcertFlag(requestID))
                 {
-                    sql.closeConnection();
+                    
                     return -3;
                 }
-                sql.closeConnection();
+               
 
                 //connect to the ca
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);
@@ -200,10 +205,8 @@ namespace CertificateAdmin
                 //retrive the certifcate status  from the ca in code
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
                 // strDisposition = objCertRequest.GetDispositionMessage();
-                sql = new SqlLite();
-                sql.connectToDatabase();
-                sql.updateTable(iDisposition, requestID);
-                sql.closeConnection();
+                //sql = new SqlLite();
+                sql.updateTable(iDisposition, requestID);              
                 return iDisposition;
             }
 
@@ -239,7 +242,7 @@ namespace CertificateAdmin
                 //retrive the Certificate 
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
                 pstrCertificate = objCertRequest.GetCertificate(CR_OUT_BASE64);
-                sql.connectToDatabase(); 
+              
                 sql.updateCertInfo(pstrCertificate, requestID);      
                 Certificate cert = new Certificate { CertValue = pstrCertificate };
                 string certJson = Newtonsoft.Json.JsonConvert.SerializeObject(cert);           

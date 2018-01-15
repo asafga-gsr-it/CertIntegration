@@ -57,9 +57,11 @@ namespace SQLiteSamples
         // As you can see, there is quite some duplicate code here, we'll solve this in part two.
         public  void insertTable(string hostname,int status,int reqid)
         {
+            connectToDatabase();
             string sql = "insert into Certificate (certname, status,reqid,RequestDate) values (" + "'"+hostname+"'"+","+ status + ","+reqid +","+"'"+ DateTime.Now.ToString("yyyyMMdd", System.Globalization.CultureInfo.GetCultureInfo("en-US")) +"'"+")";
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-            command.ExecuteNonQuery();     
+            command.ExecuteNonQuery();
+            closeConnection();
         }
 
         public void updateCertInfo(string Cert, int reqid)
@@ -74,16 +76,18 @@ namespace SQLiteSamples
             string issuedby = cert.Issuer.ToString(); 
             string issuedto = cert.Subject.ToString();
             File.Delete(reqid + ".cer");
-
+            connectToDatabase();
             string sql = "update Certificate set ExpirationDate=" +"'"+ expirtationdate +"'"+ ","+ "Issuedby=" + "'"+issuedby +"'"+"," + "Issuedto="+ "'"+issuedto+"'"+ 
             " where reqid=" + reqid;
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
             command.ExecuteNonQuery();
+            closeConnection();
         }
 
 
         public void updateTable(int status, int reqid)
         {
+            connectToDatabase();
             string sql;
             if (status== 3)
             {
@@ -96,21 +100,24 @@ namespace SQLiteSamples
                  
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
             command.ExecuteNonQuery();
+            closeConnection();
         }
 
         public void printTable()
         {
+            connectToDatabase();
             string sql = "select * from Certificate";
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
             SQLiteDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                Console.WriteLine("Name: " + reader["certname"] + "\tScore: " + reader["status"] + reader["reqid"] + reader["RequestDate"]);
+                Console.WriteLine("Name: " + reader["certname"] + "\tScore: " + reader["status"] + reader["reqid"] + reader["RequestDate"]+ reader["ExpirationDate"] + reader["Issuedby"] + reader["Issuedto"] + reader["certFlag"]);
             }
+            closeConnection();
         }
         public int checkCertExsits(string hostname)
         {
-
+            connectToDatabase();
             string sql = "select * from Certificate where certname="+"'"+hostname+"'";
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
             SQLiteDataReader reader = command.ExecuteReader();
@@ -118,27 +125,46 @@ namespace SQLiteSamples
             {
                 if (string.IsNullOrEmpty(reader["Issuedby"].ToString()))
                 {
+                    closeConnection();
                     return 1;
                 }
+                closeConnection();
                 return 2;
             }
-
+            closeConnection();
             return 0;
         }
 
         public bool checkcertFlag(int reqid)
         {
-
+            connectToDatabase();
             string sql = "select * from Certificate where reqid=" + reqid ;
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
             SQLiteDataReader reader = command.ExecuteReader();
 
             if (string.IsNullOrEmpty(reader["certFlag"].ToString()))
             {
+                closeConnection();
                 return false;
             }
-
+            closeConnection();
             return true;
+        }
+
+        public bool checkHostnameWithreqID(int reqid,string hostname)
+        {
+            connectToDatabase();
+            string sql = "select * from Certificate where reqid=" + reqid + " and certname="+"'"+hostname+"'";
+            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            if (string.IsNullOrEmpty(reader["certname"].ToString()))
+            {
+                closeConnection();
+                return true;
+            }
+            closeConnection();
+            return false;
         }
 
 
