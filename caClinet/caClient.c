@@ -93,7 +93,7 @@ char * GetCert(int reqid)
  
   /* we're done with libcurl, so clean it up */ 
     curl_global_cleanup();
- 
+ `
     return cert;
 }
 
@@ -114,9 +114,11 @@ int  requestCert(char* hostname)
 /* init the curl session */ 
   curl_handle = curl_easy_init();
 
+
+/* init the server url*/
   url= concat("http://34.201.109.145:50026/api/Cert/Createreq?hostname=",hostname);
 
-
+ 
 
 /* specify URL to get */ 
   curl_easy_setopt(curl_handle, CURLOPT_URL,url);
@@ -168,7 +170,7 @@ int main(void)
      FILE *fp;
 
  
-    reqid=requestCert("certvalidationFix");
+    reqid=requestCert("ironscriptFix");
     cert=GetCert(reqid);
     fptr = fopen("cert.cer", "w");
     if(fptr == NULL)

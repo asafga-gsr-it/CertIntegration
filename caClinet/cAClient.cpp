@@ -10,6 +10,8 @@
 using namespace std;
 std::string url; 
 std::string fileloc;
+std::string ouidg;
+std::string  hashg;
 
 //copy the value return from the HTTP Get to the memorty
 size_t WriteCallback(char *contents, size_t size, size_t nmemb, void *userp)
@@ -21,24 +23,30 @@ size_t WriteCallback(char *contents, size_t size, size_t nmemb, void *userp)
 
 
 //Function to Request  Certificate Request to Send To  the Microsoft CA
-int requestCert(std::string   hostname)
+int requestCert(std::string   hostname,std::string  token)
 {
  curl_global_init(CURL_GLOBAL_ALL);
 
     CURL* easyhandle = curl_easy_init();  /* init the curl session */ 
     std::string readBuffer;
     std::string serverurl;
+     std::string  header;
     int res;
    
     const char *data = "data to send";
   
+    header="Authorization: Bearer "+token;
+    struct curl_slist *chunk = NULL;
+
     serverurl=url;
     
    //init the Url -For Create Ca Request 
     serverurl+= "/Createreq?hostname=" + hostname;
-
+   
+    chunk = curl_slist_append(chunk,header.c_str());
     
       /* specify URL to get */ 
+    curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);
     curl_easy_setopt(easyhandle, CURLOPT_URL,serverurl.c_str()); 
 
     /* Create Post Request */ 
@@ -48,6 +56,7 @@ int requestCert(std::string   hostname)
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
     curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 60L);
+
     /*Perform Http Rest Post */
     res=curl_easy_perform(easyhandle);
     if (res==0)
@@ -59,29 +68,30 @@ int requestCert(std::string   hostname)
     return -1;
 }
 
-int requestToken(int clientid)
+std::string requestToken(std::string clientid,std::string clientSecret)
 {
- curl_global_init(CURL_GLOBAL_ALL);
+     curl_global_init(CURL_GLOBAL_ALL);
 
     CURL* easyhandle = curl_easy_init();  /* init the curl session */ 
     std::string readBuffer;
     std::string serverurl;
+     std::string data;
     json_error_t error;
     json_t *root;
     const char * token;
     int res;
    
-    const char *data = "client_id=1234&grant_type=client_credentials";
+    data = "client_id="+clientid+"&client_secret="+clientSecret+"&grant_type=client_credentials";
   
     //serverurl=url;
 
    //init the Url -For Create Ca Request 
     //serverurl+= "/Createreq?hostname=" + hostname;
       /* specify URL to get */ 
-    curl_easy_setopt(easyhandle, CURLOPT_URL,"http:/52.90.34.6:50026/Token"); 
+    curl_easy_setopt(easyhandle, CURLOPT_URL,"http:/52.90.241.98:50026/Token"); 
 
     /* Create Post Request */ 
-    curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS,data);
+    curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS,data.c_str());
 
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);
@@ -91,7 +101,7 @@ int requestToken(int clientid)
     res =curl_easy_perform(easyhandle);
     if (res!=0)
     {
-       return -1;
+       return "Error Connecting";
     }
   
     root = json_loads(readBuffer.c_str(), 0, &error);
@@ -100,26 +110,31 @@ int requestToken(int clientid)
     {
       token = json_string_value(json_object_get(root, "error_description"));
     }
-    cout<<token<<endl;
+ 
 
-    return 1;
+    return token;
 }
 
-int  getCertStatus(int   reqid)
+int  getCertStatus(int   reqid,std::string hostName,std::string  token)
 {
  curl_global_init(CURL_GLOBAL_ALL);
 
     CURL* easyhandle = curl_easy_init(); /* init the curl session */ 
     std::string readBuffer;
     std::string serverurl;
+    std::string  header;
     int status;
     int res;
+    struct curl_slist *chunk = NULL;
 
+    header="Authorization: Bearer "+token;
     serverurl=url;
     /*init the Url -For Getting the  Ca */
-    serverurl+="/GetStatus?reqid="+std::to_string(reqid);    
+    serverurl+="/GetStatus?reqid="+std::to_string(reqid)+"&"+"hostname="+hostName;    
     
-    /* specify URL to get */ 
+    chunk = curl_slist_append(chunk,header.c_str());
+    curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);
+    /* specify URL to get */     
     curl_easy_setopt(easyhandle, CURLOPT_URL,serverurl.c_str()); 
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);    
@@ -139,21 +154,25 @@ int  getCertStatus(int   reqid)
 
 
 /*Function to Return the Certificate That Was Issued by Microsoft CA */
-int  getCertificate(int   reqid)
+int  getCertificate(int   reqid,std::string  token)
 {
-   const char * cert;
-    json_error_t error;
+  const char * cert;
+  json_error_t error;
   json_t *root;
- curl_global_init(CURL_GLOBAL_ALL);
- int res;
+  curl_global_init(CURL_GLOBAL_ALL);
+  int res;
+  std::string  header;
+  struct curl_slist *chunk = NULL;
 
+    header="Authorization: Bearer "+token;
     CURL* easyhandle = curl_easy_init(); /* init the curl session */ 
     std::string readBuffer;
     std::string serverurl;
     /*init the Url -For Getting the  Ca */
        serverurl=url;
     serverurl+="/GetCert?reqid="+std::to_string(reqid);    
-    
+    chunk = curl_slist_append(chunk,header.c_str());
+    curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);
     /* specify URL to get */ 
     curl_easy_setopt(easyhandle, CURLOPT_URL,serverurl.c_str()); 
     /* send all data to this function  to save the Return Value */  
@@ -174,13 +193,35 @@ int  getCertificate(int   reqid)
       out << cert;
       /*Close the File */
       out.close();
-      cout<<"Certificate is at:"<<fileloc<<endl;
       return 0;
     }
     return -1;
 }
 
+void hashOuid()
+{
+  FILE *fp;
+  char hashtemp[300];
+  char ouidtemp[300];
 
+  /* Open the command for reading. */
+  fp = popen("./sha.sh", "r");
+  if (fp == NULL) {
+    printf("Failed to run command\n" );
+    exit(1);
+  }
+
+  /* Read the output a line at a time - output it. */
+  fgets(hashtemp, sizeof(hashtemp)-1, fp);
+  fgets(ouidtemp, sizeof(ouidtemp)-1, fp);
+      /* close */
+  pclose(fp);
+    hashtemp[strcspn(hashtemp, "\n")] = 0;
+    ouidtemp[strcspn(ouidtemp, "\n")] = 0;
+
+    hashg=hashtemp;
+    ouidg=ouidtemp;
+}
 
 
 int main(int argc, char * argv[])
@@ -189,111 +230,138 @@ int main(int argc, char * argv[])
   int reqid;
   int  status;
   int certstatus;
-  const char * urltmp;
-  const char *  fileloctmp;
-  int token;
+  int i=0;
 
+  const char *  client;
+  const char * errorMessage; 
+  const char* reqidStatus;
+  std::string  certPath;
+  std::string token;
   struct stat st;
   FILE* f;
-    json_error_t error;
-    json_t *root, *obj;
- const char *strText;
-     
+  json_error_t error;
+  json_t *root, *obj;
+  const char *strText;
+  hashOuid();
 
-
+  
   if (argv[2]!=NULL) 
   {
      reqid=std::atoi(argv[2]);
   }
-   /* token=requestToken(1234);
-    if (token==-1)
-     {
-       cout<<"problem getting token"<<endl;
-       return -1;
-     } */
-    
+  
 
     f = fopen ("caw.conf" , "r");
-  //ifstream in("caw.conf");
- // if(!in) {
-  //  cout << "Cannot open input file.\n";
-  //  return 1;
-//  }
-  
- //   in.getline(urltmp, 100); 
-  //  in.getline(fileloctmp, 100); 
- //   in.close();
 
+   
     root = json_loadf(f, 0, &error);
-    //obj = json_object_get(root, "url");
-     urltmp = json_string_value(json_object_get(root, "url"));
-     fileloctmp=json_string_value(json_object_get(root, "file"));
-     url=urltmp;
-     fileloc=fileloctmp;
-    fileloc+=argv[1];
-    fileloc+=".cer";
-    url=url.substr(url.find("-") + 1);
-    fileloc=fileloc.substr(fileloc.find("-") + 1) ;
-      if(stat(fileloc.c_str(),&st) == 0)
-      {
-        cout<<"The Certificate Is allready Issued-"<<fileloc.c_str()<<endl;
-        return 0;
-      }
 
+    //obj = json_object_get(root, "url");
+     url = json_string_value(json_object_get(root, "url"));
+     fileloc=json_string_value(json_object_get(root, "file"));
+     //client=json_string_value(json_object_get(root, "client"));
+     fileloc+=argv[1];
+     fileloc+=".cer";
+
+
+      token=requestToken(hashg,ouidg);
+     if (token.find("Error",0)==0) 
+     {
+           errorMessage=token.c_str();
+           goto status;
+     }
+    
 
     if (argv[2]==NULL) 
     {
        
-        reqid=requestCert(argv[1]);
+        reqid=requestCert(argv[1],token.c_str());
+         
         if (reqid==-1)
          {
-            cout<<"There is network Problem"<<endl;
-            return 1;
+            errorMessage="There is network Problem";
+            goto status;
 
          }
           else if (reqid==-2)
          {
-            cout<<"The Certificate Was Allreday Requested"<<endl;
-            return 1;
+           
+             errorMessage="The Certificate Was Allreday Requested";
+             goto status;
          }
             else if (reqid==-3)
          {
-            cout<<"The Certificate Was Allreday Issued"<<endl;
-            return 1;
+            errorMessage="The Certificate Was Allreday Issued and Used";
+            reqidStatus="Consumed";
+            goto status;
          }
           else if (reqid==0)
          {
-            cout<<"The Certificate Was Not Create Due To a Problem"<<endl;
-            return 1;
+            errorMessage="The Certificate Was Not Create Due To a Problem";
+            goto status;
          }
     }
-      
+ 
+ 
 
-    status=getCertStatus(reqid);
-    if (status==3) 
+    status=getCertStatus(reqid,argv[1],token.c_str());
+     if (status==3) 
     {
-        certstatus=getCertificate(reqid);
+         reqidStatus="Issued";
+         certPath=fileloc;
+        certstatus=getCertificate(reqid,token.c_str());
         if (certstatus==-1)
         {
-          cout<<"There is network Problem"<<endl;
-          return 1;
+          errorMessage="There is network Problem";
+           goto status;
         }
     
     }
+       else if (status==-6)
+    {
+       errorMessage="The Reqid is not belong to the hostname";
+       
+        goto status;
+    }
     else if (status==-3)
     {
-       cout<<"The Certificate Was Allreday Issued and used "<<endl;
-       return 1;
+       errorMessage="The Certificate Was Allreday Issued and used ";
+       reqidStatus="Consumed";
+       certPath=fileloc;      
+        goto status;
     }
     else if (status==-1)
     {
-       cout<<"There is network Problem"<<endl;
-       return 1;
+        errorMessage="There is network Problem";
+       goto status;
     }
-    else
+      else if (status==2)
     {
-        cout<<"The Certificate ReqId-"<<reqid<<" Is Yet Not Issued"<<endl;
+        reqidStatus="Denied";
+        goto status;
     }  
-
+    else if (status==5)
+    {
+        reqidStatus="Pending";
+        goto status;
+    }  
+    status:
+          if (argv[2]!=NULL) 
+          {
+          reqid=std::atoi(argv[2]);
+          }
+          obj = json_object();
+          if (reqid>0) 
+          {
+          json_object_set(obj, "HostName", json_string(argv[1]));
+          json_object_set(obj, "Reqid", json_integer(reqid));       
+          json_object_set(obj, "CertStatus", json_string(reqidStatus));
+          json_object_set(obj, "CertPath", json_string(certPath.c_str()));
+            
+          }
+          json_object_set(obj, "ErrorMessage", json_string(errorMessage));
+          char* result=json_dumps(obj,0);
+          cout<<result<<endl;
+           json_object_clear(obj);
     return 0;
 }
