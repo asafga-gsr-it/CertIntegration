@@ -41,7 +41,7 @@ int requestCert(std::string   hostname,std::string  token)
     serverurl=url;
     
    //init the Url -For Create Ca Request 
-    serverurl+= "/Createreq?hostname=" + hostname;
+    serverurl+= "/api/Cert/Createreq?hostname=" + hostname;
    
     chunk = curl_slist_append(chunk,header.c_str());
     
@@ -83,12 +83,12 @@ std::string requestToken(std::string clientid,std::string clientSecret)
    
     data = "client_id="+clientid+"&client_secret="+clientSecret+"&grant_type=client_credentials";
   
-    //serverurl=url;
-
+    serverurl=url;
+    serverurl+= "/Token";
    //init the Url -For Create Ca Request 
     //serverurl+= "/Createreq?hostname=" + hostname;
       /* specify URL to get */ 
-    curl_easy_setopt(easyhandle, CURLOPT_URL,"http:/52.90.241.98:50026/Token"); 
+    curl_easy_setopt(easyhandle, CURLOPT_URL,serverurl.c_str()); 
 
     /* Create Post Request */ 
     curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS,data.c_str());
@@ -130,7 +130,7 @@ int  getCertStatus(int   reqid,std::string hostName,std::string  token)
     header="Authorization: Bearer "+token;
     serverurl=url;
     /*init the Url -For Getting the  Ca */
-    serverurl+="/GetStatus?reqid="+std::to_string(reqid)+"&"+"hostname="+hostName;    
+    serverurl+="/api/Cert/GetStatus?reqid="+std::to_string(reqid)+"&"+"hostname="+hostName;    
     
     chunk = curl_slist_append(chunk,header.c_str());
     curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);
@@ -170,7 +170,7 @@ int  getCertificate(int   reqid,std::string  token)
     std::string serverurl;
     /*init the Url -For Getting the  Ca */
        serverurl=url;
-    serverurl+="/GetCert?reqid="+std::to_string(reqid);    
+    serverurl+="/api/Cert/GetCert?reqid="+std::to_string(reqid);    
     chunk = curl_slist_append(chunk,header.c_str());
     curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);
     /* specify URL to get */ 
