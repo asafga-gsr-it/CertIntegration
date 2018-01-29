@@ -28,6 +28,7 @@ namespace SQLiteSamples
                 SQLiteConnection.CreateFile("MyDatabase.sqlite");
                 connectToDatabase();
                 createTable();
+                createTableHost();
                 m_dbConnection.Close();
             }
         }
@@ -50,6 +51,16 @@ namespace SQLiteSamples
         {
             string sql = "create table Certificate (certname varchar(50), status int,reqid int,RequestDate varchar(50),ExpirationDate varchar(50),Issuedby varchar(50),Issuedto varchar(50),certFlag varchar(50))";
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            command.ExecuteNonQuery();
+        }
+
+        public void createTableHost()
+        {
+            string sql = "create table Hosts (HostID varchar(100),Hash varchar(100))";
+            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            command.ExecuteNonQuery();
+            sql = "insert into Hosts (HostID,Hash) values (" + "'" + "EC222391-ED2E-D25C-FAC8-E00E41AC8030" + "'" + "," + "'" + "3aba57e77256c95043152b8006264c3ccbf88413037044fc9fcc029146932616" + "'" + ")";
+           command = new SQLiteCommand(sql, m_dbConnection);
             command.ExecuteNonQuery();
         }
 
@@ -159,6 +170,22 @@ namespace SQLiteSamples
             SQLiteDataReader reader = command.ExecuteReader();
 
             if (string.IsNullOrEmpty(reader["certname"].ToString()))
+            {
+                closeConnection();
+                return true;
+            }
+            closeConnection();
+            return false;
+        }
+
+        public bool checkClientWithHash(string clientID, string hash)
+        {
+            connectToDatabase();
+            string sql = "select * from Hosts where HostID=" +"'"+ clientID+ "'"+ " and Hash=" + "'" + hash + "'";
+            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            if (string.IsNullOrEmpty(reader["HostID"].ToString()))
             {
                 closeConnection();
                 return true;
