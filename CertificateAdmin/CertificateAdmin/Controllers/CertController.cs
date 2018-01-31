@@ -9,7 +9,9 @@ using CertificateAdmin;
 namespace CertificateAdmin
 {
     [Authorize]
-   [RoutePrefix("api/Cert")]
+    [RequireHttps]
+
+    [RoutePrefix("api/Cert")]
     public class CertController : ApiController
     {
         // GET api/<controller>
@@ -41,6 +43,7 @@ namespace CertificateAdmin
         public HttpResponseMessage GetCertificate(int reqid)
         {
             string cerificate;
+
             Certificate cert = new Certificate();
             cerificate = cert.getCertificate(reqid);
             var resp = new HttpResponseMessage(HttpStatusCode.OK);

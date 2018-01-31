@@ -133,6 +133,7 @@ C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\C
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\Microsoft.Web.Infrastructure.dll
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\Newtonsoft.Json.dll
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\Owin.dll
+C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Data.SQLite.dll
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Net.Http.Formatting.dll
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Web.Helpers.dll
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Web.Http.dll
@@ -151,6 +152,7 @@ C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\C
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\Microsoft.AI.WindowsServer.xml
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\Microsoft.ApplicationInsights.xml
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Data.SQLite.xml
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\Newtonsoft.Json.xml
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Net.Http.Formatting.xml
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Web.Helpers.xml
@@ -184,6 +186,4 @@ C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\C
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.csproj.ResolveComReference.cache
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.dll
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.pdb
-C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Data.SQLite.dll
-C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Data.SQLite.xml
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.csprojResolveAssemblyReference.cache
