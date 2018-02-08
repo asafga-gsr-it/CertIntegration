@@ -195,5 +195,31 @@ namespace SQLiteSamples
         }
 
 
+        public bool checkHostExists(string clientID)
+        {
+            connectToDatabase();
+            string sql = "select * from Hosts where HostID=" + "'" + clientID+ "'";
+            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            if (string.IsNullOrEmpty(reader["HostID"].ToString()))
+            {
+                closeConnection();
+                return false;
+            }
+            closeConnection();
+            return true;
+        }
+
+        public void updateCertFlag(string hostname)
+        {
+            string sql;
+            connectToDatabase();           
+            sql = "update Certificate set certFlag=NULL" + " where certname=" + "'"+ hostname + "'";       
+            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            command.ExecuteNonQuery();
+            closeConnection();
+        }
+
     }
 }

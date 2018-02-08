@@ -259,6 +259,31 @@ namespace CertificateAdmin
 
         }
 
+
+        public int unlockCert(string hostname,string clientid)
+        {
+            SqlLite sql = new SqlLite();
+            string status;
+
+            try
+            {
+                if (sql.checkHostExists(clientid))
+                {
+                    sql.updateCertFlag(hostname);
+                }
+                return 0;
+            }
+
+            catch (Exception ex)
+
+            {
+                status = ex.Message;
+                return 1;
+
+            }
+
+        }
+
     }
 
     }

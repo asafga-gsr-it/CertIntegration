@@ -8,8 +8,8 @@ using CertificateAdmin;
 
 namespace CertificateAdmin
 {
-    [Authorize]
-    [RequireHttps]
+    //[Authorize]
+    //[RequireHttps]
 
     [RoutePrefix("api/Cert")]
     public class CertController : ApiController
@@ -77,6 +77,20 @@ namespace CertificateAdmin
             }
             requestID = cert.submitRequest(CertID, hostname);
             return requestID;
+
+        }
+
+
+        // unlock certifcate
+        // POST /api/Cert/unlockCert? hostname=asaf&clientid=1234
+        [Route("unlockCert")]
+        [HttpPost]
+        public int unlockCertFlag(string hostname,string clientid)
+        {
+            int status;
+            Certificate cert = new Certificate();
+            status = cert.unlockCert(hostname, clientid);
+            return status;
 
         }
 
