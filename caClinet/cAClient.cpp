@@ -22,6 +22,9 @@ size_t WriteCallback(char *contents, size_t size, size_t nmemb, void *userp)
 
 
 
+
+
+
 //Function to Request  Certificate Request to Send To  the Microsoft CA
 int requestCert(std::string   hostname,std::string  token)
 {
@@ -30,7 +33,7 @@ int requestCert(std::string   hostname,std::string  token)
     CURL* easyhandle = curl_easy_init();  /* init the curl session */ 
     std::string readBuffer;
     std::string serverurl;
-     std::string  header;
+    std::string  header;
     int res;
    
     const char *data = "data to send";
@@ -42,13 +45,17 @@ int requestCert(std::string   hostname,std::string  token)
     
    //init the Url -For Create Ca Request 
     serverurl+= "/api/Cert/Createreq?hostname=" + hostname;
+
+    
+
+    
    
     chunk = curl_slist_append(chunk,header.c_str());
     
       /* specify URL to get */ 
     curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);
     curl_easy_setopt(easyhandle, CURLOPT_URL,serverurl.c_str()); 
-
+    curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, 0L);
     /* Create Post Request */ 
     curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS,data);
 
@@ -84,7 +91,7 @@ std::string requestToken(std::string clientid,std::string clientSecret)
     data = "client_id="+clientid+"&client_secret="+clientSecret+"&grant_type=client_credentials";
   
     serverurl=url;
-    serverurl+= "/Token";
+    serverurl+= "/Token";    
    //init the Url -For Create Ca Request 
     //serverurl+= "/Createreq?hostname=" + hostname;
       /* specify URL to get */ 
@@ -92,7 +99,7 @@ std::string requestToken(std::string clientid,std::string clientSecret)
 
     /* Create Post Request */ 
     curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS,data.c_str());
-
+    curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, 0L);
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
@@ -136,6 +143,7 @@ int  getCertStatus(int   reqid,std::string hostName,std::string  token)
     curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);
     /* specify URL to get */     
     curl_easy_setopt(easyhandle, CURLOPT_URL,serverurl.c_str()); 
+    curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, 0L);
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);    
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
@@ -175,6 +183,7 @@ int  getCertificate(int   reqid,std::string  token)
     curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);
     /* specify URL to get */ 
     curl_easy_setopt(easyhandle, CURLOPT_URL,serverurl.c_str()); 
+    curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, 0L);
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);    
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
