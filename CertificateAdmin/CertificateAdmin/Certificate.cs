@@ -32,6 +32,8 @@ namespace CertificateAdmin
 
         private const int CR_OUT_CHAIN = 0x100;
 
+
+
         SqlLite sql = new SqlLite();
 
         public string CertValue { get; set; }
@@ -112,7 +114,8 @@ namespace CertificateAdmin
            
 
                 objEnroll.InitializeFromRequest(objPkcs10);
-       
+             
+
                             //Certifcate Request Creation 
                             CertifcateStr = objEnroll.CreateRequest(EncodingType.XCN_CRYPT_STRING_BASE64);
                 
@@ -186,7 +189,7 @@ namespace CertificateAdmin
 
                 SqlLite sql = new SqlLite();
 
-                if (sql.checkHostnameWithreqID(requestID, hostname))
+           /*     if (sql.checkHostnameWithreqID(requestID, hostname))
                 {
 
                     return -6;
@@ -197,7 +200,7 @@ namespace CertificateAdmin
                     
                     return -3;
                 }
-               
+              */ 
 
                 //connect to the ca
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);
@@ -242,7 +245,7 @@ namespace CertificateAdmin
                 //retrive the Certificate 
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
                 pstrCertificate = objCertRequest.GetCertificate(CR_OUT_BASE64);
-              
+                RenewCert(pstrCertificate);
                 sql.updateCertInfo(pstrCertificate, requestID);      
                 Certificate cert = new Certificate { CertValue = pstrCertificate };
                 string certJson = Newtonsoft.Json.JsonConvert.SerializeObject(cert);           
@@ -284,6 +287,42 @@ namespace CertificateAdmin
 
         }
 
+        public int RenewCert(string Cert)
+        {
+            string CertifcateStr;
+            string status;
+            string HostName;
+            CX509CertificateRequestPkcs10 objPkcs10 = new CX509CertificateRequestPkcs10();
+            CX509Enrollment objEnroll = new CX509Enrollment();
+            CCertConfig objCertConfig = new CCertConfig();
+            CX500DistinguishedName objDN = new CX500DistinguishedName();
+            string strCAConfig;
+            var inheritOptions = X509RequestInheritOptions.InheritPrivateKey |X509RequestInheritOptions.InheritSubjectFlag | X509RequestInheritOptions.InheritExtensionsFlag | X509RequestInheritOptions.InheritSubjectAltNameFlag;
+     
+            try
+            {
+                strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);
+                objPkcs10.InitializeFromCertificate(X509CertificateEnrollmentContext.ContextUser, Cert, EncodingType.XCN_CRYPT_STRING_BASE64HEADER, inheritOptions);
+                objDN = objPkcs10.Subject;
+                HostName = objDN.Name.ToString().Substring(3);
+                objEnroll.InitializeFromRequest(objPkcs10);
+                CertifcateStr = objEnroll.CreateRequest(EncodingType.XCN_CRYPT_STRING_BASE64);
+                submitRequest(CertifcateStr,HostName);
+     
+                return 0;
+            }
+
+            catch (Exception ex)
+
+            {
+                status = ex.Message;
+                return 1;
+
+            }
+
+        }
+
     }
 
     }
+;
