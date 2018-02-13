@@ -221,7 +221,27 @@ namespace SQLiteSamples
             closeConnection();
         }
 
-  
+        public int returnCertInfo(string hostname)
+        {
+            int reqid;
+            connectToDatabase();
+            string sql = "select * from Certificate where certname=" + "'" + hostname + "'";
+            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            reqid = Int32.Parse(reader["reqid"].ToString());
+            closeConnection();
+            return reqid;
+        }
 
+        public void deleteCertRecord(int reqid)
+        {
+          
+            connectToDatabase();
+            string sql = "delete from  Certificate where reqid=" + reqid;
+            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            closeConnection();
+
+        }
     }
 }

@@ -381,9 +381,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50026</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://52.91.14.126:44310</IISUrl>
+          <IISUrl>https://52.70.190.224:44310</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>https://52.91.14.126:44310</IISAppRootUrl>
+          <IISAppRootUrl>https://52.70.190.224:44310</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

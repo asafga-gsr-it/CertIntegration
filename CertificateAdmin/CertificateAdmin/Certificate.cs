@@ -189,7 +189,7 @@ namespace CertificateAdmin
 
                 SqlLite sql = new SqlLite();
 
-           /*     if (sql.checkHostnameWithreqID(requestID, hostname))
+                if (sql.checkHostnameWithreqID(requestID, hostname))
                 {
 
                     return -6;
@@ -200,7 +200,7 @@ namespace CertificateAdmin
                     
                     return -3;
                 }
-              */ 
+              
 
                 //connect to the ca
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);
@@ -244,8 +244,7 @@ namespace CertificateAdmin
                
                 //retrive the Certificate 
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig);
-                pstrCertificate = objCertRequest.GetCertificate(CR_OUT_BASE64);
-                RenewCert(pstrCertificate);
+                pstrCertificate = objCertRequest.GetCertificate(CR_OUT_BASE64);               
                 sql.updateCertInfo(pstrCertificate, requestID);      
                 Certificate cert = new Certificate { CertValue = pstrCertificate };
                 string certJson = Newtonsoft.Json.JsonConvert.SerializeObject(cert);           
@@ -287,8 +286,9 @@ namespace CertificateAdmin
 
         }
 
-        public int RenewCert(string Cert)
+        public int RenewCert(string Cert,int reqid)
         {
+            int iDisposition;
             string CertifcateStr;
             string status;
             string HostName;
@@ -307,9 +307,16 @@ namespace CertificateAdmin
                 HostName = objDN.Name.ToString().Substring(3);
                 objEnroll.InitializeFromRequest(objPkcs10);
                 CertifcateStr = objEnroll.CreateRequest(EncodingType.XCN_CRYPT_STRING_BASE64);
-                submitRequest(CertifcateStr,HostName);
-     
-                return 0;
+                iDisposition=submitRequest(CertifcateStr,HostName);
+
+                if  (iDisposition>0)
+                {
+                    SqlLite sql = new SqlLite();
+                    sql.deleteCertRecord(reqid);
+                    return iDisposition;
+                }
+
+                 return 0;
             }
 
             catch (Exception ex)

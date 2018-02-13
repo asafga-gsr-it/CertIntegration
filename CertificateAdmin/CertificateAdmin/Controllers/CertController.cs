@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using CertificateAdmin;
+using SQLiteSamples;
+using Newtonsoft.Json.Linq;
 
 namespace CertificateAdmin
 {
@@ -92,6 +94,25 @@ namespace CertificateAdmin
             status = cert.unlockCert(hostname, clientid);
             return status;
 
+        }
+
+
+        // Renew certifcate
+        // POST /api/Cert/renewCert? hostname=asaf
+        [Route("renewCert")]
+        [HttpPost]
+        public int renewCert(string hostname)
+        {
+            int reqid;
+            string cerificate;
+            SqlLite sql = new SqlLite();
+            reqid =sql.returnCertInfo(hostname);
+            Certificate cert = new Certificate();
+            cerificate= cert.getCertificate(reqid);
+            JObject obj = JObject.Parse(cerificate);
+            string name = (string)obj["CertValue"];
+            reqid =cert.RenewCert(name,reqid);
+            return reqid;
         }
 
         // PUT api/<controller>/5
