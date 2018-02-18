@@ -73,7 +73,7 @@ namespace CertificateAdmin
             {
 
               SqlLite sql = new SqlLite();
-                sql.certExpired();
+             
                
                 if (sql.checkCertExsits(hostName)==1)
                 {
@@ -189,7 +189,7 @@ namespace CertificateAdmin
 
                 SqlLite sql = new SqlLite();
 
-             /*   if (sql.checkHostnameWithreqID(requestID, hostname))
+                if (sql.checkHostnameWithreqID(requestID, hostname))
                 {
 
                     return -6;
@@ -200,7 +200,7 @@ namespace CertificateAdmin
                     
                     return -3;
                 }
-              */
+          
 
                 //connect to the ca
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);

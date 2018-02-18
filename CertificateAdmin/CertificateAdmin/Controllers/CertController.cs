@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 namespace CertificateAdmin
 {
     //[Authorize]
-    [RequireHttps]
+   // [RequireHttps]
 
     [RoutePrefix("api/Cert")]
     public class CertController : ApiController
@@ -119,18 +119,26 @@ namespace CertificateAdmin
         // Renew certifcate
         // POST /api/Cert/renewAllCert
         [Route("renewAllCert")]
-        [HttpGet]
-        public void renewAllCerts()
+        [HttpPost]
+        public HttpResponseMessage renewAllCerts()
         {
-          
+            int reqid;
+            var jsonObject = new JObject();
+            var resp = new HttpResponseMessage(HttpStatusCode.OK);
             SqlLite sql = new SqlLite();
             List<string> list = sql.certExpired();
 
             for (var i = 0; i < list.Count; i++)
             {
-                renewCert(list[i]);
-            }
+               
+                jsonObject.Add("Host"+i, list[i]);
+             
+                reqid=renewCert(list[i]);
 
+                jsonObject.Add("reqid"+i, reqid);
+            }
+            resp.Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(jsonObject), System.Text.Encoding.UTF8, "application/json");
+            return resp;
         }
 
         // PUT api/<controller>/5

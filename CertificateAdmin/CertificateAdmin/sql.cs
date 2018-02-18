@@ -252,7 +252,7 @@ namespace SQLiteSamples
             List<string> list = new List<string>();
             string s= DateTime.Now.ToString("M/dd/yyyy"); 
             connectToDatabase();
-            string sql = "select * from Certificate where ExpirationDate>"+ s;
+            string sql = "select * from Certificate where ExpirationDate>date("+ s+")";
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
             SQLiteDataReader reader = command.ExecuteReader();
    
