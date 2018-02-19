@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Globalization;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
@@ -50,7 +51,7 @@ namespace SQLiteSamples
         // Creates a table named 'highscores' with two columns: name (a string of max 20 characters) and score (an int)
         public void createTable()
         {
-            string sql = "create table Certificate (certname varchar(50), status int,reqid int,RequestDate varchar(50),ExpirationDate DATE,Issuedby varchar(50),Issuedto varchar(50),certFlag varchar(50))";
+            string sql = "create table Certificate (certname varchar(50), status int,reqid int,RequestDate varchar(50),ExpirationDate DATETIME,Issuedby varchar(50),Issuedto varchar(50),certFlag varchar(50))";
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
             command.ExecuteNonQuery();
         }
@@ -78,22 +79,35 @@ namespace SQLiteSamples
 
         public void updateCertInfo(string Cert, int reqid)
         {
-
+            string status;
             StreamWriter objFile = null;
             objFile = File.CreateText(reqid + ".cer");
             objFile.Write(Cert);
             objFile.Close();
             X509Certificate2 cert = new X509Certificate2(reqid + ".cer");
             string expirtationdate = cert.NotAfter.ToString();
+            string createddate = Convert.ToDateTime(expirtationdate).ToString("yyyy-MM-dd HH:mm:ss");
+          //  DateTime oDate = Convert.ToDateTime(expirtationdate);
+         //   oDate = DateTime.ParseExact(expirtationdate,"yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
             string issuedby = cert.Issuer.ToString();
             string issuedto = cert.Subject.ToString();
             File.Delete(reqid + ".cer");
             connectToDatabase();
-            string sql = "update Certificate set ExpirationDate=" + "'" + expirtationdate + "'" + "," + "Issuedby=" + "'" + issuedby + "'" + "," + "Issuedto=" + "'" + issuedto + "'" +
+            string sql = "update Certificate set ExpirationDate="+"'"+ createddate + "'"+"," + "Issuedby=" + "'" + issuedby + "'" + "," + "Issuedto=" + "'" + issuedto + "'" +
             " where reqid=" + reqid;
-            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-            command.ExecuteNonQuery();
-            closeConnection();
+            try
+            {
+                SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                command.ExecuteNonQuery();
+                closeConnection();
+            }
+            catch (Exception ex)
+
+            {
+                status = ex.Message;
+
+
+            }
         }
 
 
@@ -123,8 +137,8 @@ namespace SQLiteSamples
             SQLiteDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-              
-                Console.WriteLine("Name: " + reader["certname"] + "\tScore: " + reader["status"] + reader["reqid"] + reader["RequestDate"] + reader["ExpirationDate"] + reader["Issuedby"] + reader["Issuedto"] + reader["certFlag"]);
+                Console.WriteLine(reader["ExpirationDate"].ToString());
+                //Console.WriteLine("Name: " + reader["certname"] + "\tScore: " + reader["status"] + reader["reqid"] + reader["RequestDate"] + reader["ExpirationDate"] + reader["Issuedby"] + reader["Issuedto"] + reader["certFlag"]);
             }
             closeConnection();
         }
@@ -248,22 +262,36 @@ namespace SQLiteSamples
 
         public List<string> certExpired()
         {
-
+            string status;
             List<string> list = new List<string>();
-            string s= DateTime.Now.ToString("M/dd/yyyy"); 
+            string s = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+2;                       
+          //  DateTime s = DateTime.Now;
             connectToDatabase();
-            string sql = "select * from Certificate where ExpirationDate>date("+ s+")";
-            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-            SQLiteDataReader reader = command.ExecuteReader();
-   
-       
-            while (reader.Read())
+            try
             {
-                list.Add(reader["certname"].ToString());               
-                
-           }
+               // printTable();
+              string sql = "select * from Certificate where ExpirationDate<date('"+s+"')";
+                //string sql = "select * from Certificate where ExpirationDate<date('2018-02-19 10:00:00')";
+                SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                SQLiteDataReader reader = command.ExecuteReader();
 
-            closeConnection();
+
+                while (reader.Read())
+                {
+                    list.Add(reader["certname"].ToString());
+
+                }
+
+                closeConnection();
+                return list;
+            }
+            catch (Exception ex)
+
+            {
+                status = ex.Message;
+               
+
+            }
             return list;
         }
 
