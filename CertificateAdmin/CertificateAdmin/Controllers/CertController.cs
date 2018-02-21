@@ -96,11 +96,11 @@ namespace CertificateAdmin
 
         }
 
-
+   
         // Renew certifcate
         // POST /api/Cert/renewCert? hostname=asaf
         [Route("renewCert")]
-        [HttpPost]
+        [HttpGet]
         public int renewCert(string hostname)
         {
             int reqid;

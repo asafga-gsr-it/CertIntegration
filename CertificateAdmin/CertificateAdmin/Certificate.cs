@@ -34,7 +34,7 @@ namespace CertificateAdmin
 
 
 
-        SqlLite sql = new SqlLite();
+     
 
         public string CertValue { get; set; }
 

@@ -264,14 +264,14 @@ namespace SQLiteSamples
         {
             string status;
             List<string> list = new List<string>();
-            string s = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+2;                       
+            string s = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");                       
           //  DateTime s = DateTime.Now;
             connectToDatabase();
             try
             {
                // printTable();
-              string sql = "select * from Certificate where ExpirationDate<date('"+s+"')";
-                //string sql = "select * from Certificate where ExpirationDate<date('2018-02-19 10:00:00')";
+             string sql = "select * from Certificate where ExpirationDate<date('"+s+"')";
+               // string sql = "select * from Certificate where ExpirationDate=<date('2018-02-20 10:00:00')";
                 SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
                 SQLiteDataReader reader = command.ExecuteReader();
 
