@@ -26,7 +26,7 @@ size_t WriteCallback(char *contents, size_t size, size_t nmemb, void *userp)
 
 
 //Function to Request  Certificate Request to Send To  the Microsoft CA
-int unlockflag(std::string  token,std::string hostname,std::string clientid)
+int unlockflag(std::string  token,std::string hostname)
 {
  curl_global_init(CURL_GLOBAL_ALL);
 
@@ -44,7 +44,7 @@ int unlockflag(std::string  token,std::string hostname,std::string clientid)
     serverurl=url;
     
    //init the Url -For Create Ca Request 
-    serverurl+= "/api/Cert/unlockCert?hostname="+hostname+"&"+"clientid="+clientid;
+    serverurl+= "/api/Cert/unlockCert?hostname="+hostname;
 
     
 
@@ -184,7 +184,17 @@ int main(int argc, char * argv[])
            errorMessage=token.c_str();
            
      }
-    cout<<unlockflag(token,argv[1],ouidg)<<endl;
+    status=unlockflag(token,argv[1]);
+
+    if (status==0)
+    {
+        cout<<"Cert Is Unlocked"<<endl;
+    }
+
+    else
+    {
+      cout<<"There  is  a problem to unlock Cert"<<endl;
+    }
 
     
     return 0;

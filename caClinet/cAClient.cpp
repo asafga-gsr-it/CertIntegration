@@ -354,6 +354,11 @@ int main(int argc, char * argv[])
         reqidStatus="Pending";
         goto status;
     }  
+     else if (status==-2)
+    {
+        errorMessage="There is Problem Getting Cert Status";
+        goto status;
+    }  
     status:
           if (argv[2]!=NULL) 
           {
