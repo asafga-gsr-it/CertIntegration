@@ -6,7 +6,7 @@ using CERTENROLLLib;
 using CERTCLILib;
 using CERTADMINLib;
 using System.IO;
-using SQLiteSamples;
+using SQLite;
 //using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateAdmin
@@ -126,7 +126,7 @@ namespace CertificateAdmin
 
             {
 
-                return ex.Message;
+                return "Error"+ex.Message;
 
             }
         }
@@ -217,7 +217,7 @@ namespace CertificateAdmin
 
             {
 
-                return 0;
+                return -2;
 
             }
 
@@ -262,17 +262,14 @@ namespace CertificateAdmin
         }
 
 
-        public int unlockCert(string hostname,string clientid)
+        public int unlockCert(string hostname)
         {
             SqlLite sql = new SqlLite();
             string status;
 
             try
             {
-                if (sql.checkHostExists(clientid))
-                {
-                    sql.updateCertFlag(hostname);
-                }
+                sql.updateCertFlag(hostname);               
                 return 0;
             }
 
@@ -280,7 +277,7 @@ namespace CertificateAdmin
 
             {
                 status = ex.Message;
-                return 1;
+                return -1;
 
             }
 

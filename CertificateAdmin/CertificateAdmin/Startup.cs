@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Owin;
 using Owin;
-using SQLiteSamples;
+using SQLite;
 
 
 [assembly: OwinStartup(typeof(CertificateAdmin.Startup))]

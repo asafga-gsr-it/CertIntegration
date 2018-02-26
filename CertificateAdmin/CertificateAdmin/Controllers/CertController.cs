@@ -5,23 +5,19 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using CertificateAdmin;
-using SQLiteSamples;
+using SQLite;
 using Newtonsoft.Json.Linq;
 
 namespace CertificateAdmin
 {
-    //[Authorize]
-   // [RequireHttps]
+    [Authorize]
+    [RequireHttps]
 
     [RoutePrefix("api/Cert")]
     public class CertController : ApiController
     {
         // GET api/<controller>
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
+    
         // return the certifacte status
         // GET api/Cert/GetStatus?reqid=79
         [Route("GetStatus")]
@@ -29,12 +25,8 @@ namespace CertificateAdmin
 
         public int GetCertStatus(int reqid,string hostname)
         {
-            int  status;
             Certificate cert = new Certificate();
-            status=cert.retrieveStatus(reqid,hostname);
-          //  var resp = new HttpResponseMessage(HttpStatusCode.OK);
-//resp.Content = new StringContent(status, System.Text.Encoding.UTF8, "text/plain");
-            return status;
+            return cert.retrieveStatus(reqid,hostname);          
         }
 
 
@@ -44,16 +36,11 @@ namespace CertificateAdmin
         //GET api/Cert/GetCert? reqid = 79
         public HttpResponseMessage GetCertificate(int reqid)
         {
-            string cerificate;
-
             Certificate cert = new Certificate();
-            cerificate = cert.getCertificate(reqid);
-            var resp = new HttpResponseMessage(HttpStatusCode.OK);
-            // resp.Content = new StringContent(cerificate, System.Text.Encoding.UTF8, "text/plain");
+            string cerificate = cert.getCertificate(reqid);
+            var resp = new HttpResponseMessage(HttpStatusCode.OK);          
             resp.Content = new StringContent(cerificate, System.Text.Encoding.UTF8, "application/json");            
             return resp;
-
-
         }
 
 
@@ -77,6 +64,11 @@ namespace CertificateAdmin
             {
                 return -3;
             }
+
+            if (CertID.Contains("Error") == true)
+            {
+                return 0;
+            }
             requestID = cert.submitRequest(CertID, hostname);
             return requestID;
 
@@ -87,20 +79,17 @@ namespace CertificateAdmin
         // POST /api/Cert/unlockCert? hostname=asaf&clientid=1234
         [Route("unlockCert")]
         [HttpPost]
-        public int unlockCertFlag(string hostname,string clientid)
+        public int unlockCertFlag(string hostname)
         {
-            int status;
             Certificate cert = new Certificate();
-            status = cert.unlockCert(hostname, clientid);
-            return status;
-
+            return cert.unlockCert(hostname);
         }
 
    
-        // Renew certifcate
+        // Renew Expired Certifcate
         // POST /api/Cert/renewCert? hostname=asaf
         [Route("renewCert")]
-        [HttpGet]
+        [HttpPost]
         public int renewCert(string hostname)
         {
             int reqid;
@@ -116,7 +105,7 @@ namespace CertificateAdmin
         }
 
 
-        // Renew certifcate
+        // Renew All Expired Certifcate
         // POST /api/Cert/renewAllCert
         [Route("renewAllCert")]
         [HttpPost]
@@ -141,14 +130,6 @@ namespace CertificateAdmin
             return resp;
         }
 
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
-        }
+       
     }
 }
