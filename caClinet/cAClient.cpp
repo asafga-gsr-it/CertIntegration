@@ -192,7 +192,7 @@ int  getCertificate(int   reqid,std::string  token)
     /*Perform Http Rest Get */
     res=curl_easy_perform(easyhandle);
 
-    if (res==0) 
+    if (res==0 and  not(strstr(readBuffer.c_str(),"Error")))
     {
       root = json_loads(readBuffer.c_str(), 0, &error);
       cert = json_string_value(json_object_get(root, "CertValue"));
