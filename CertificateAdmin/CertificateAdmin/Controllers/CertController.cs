@@ -16,8 +16,7 @@ namespace CertificateAdmin
     [RoutePrefix("api/Cert")]
     public class CertController : ApiController
     {
-        // GET api/<controller>
-    
+          
         // return the certifacte status
         // GET api/Cert/GetStatus?reqid=79
         [Route("GetStatus")]
@@ -36,7 +35,7 @@ namespace CertificateAdmin
         //GET api/Cert/GetCert? reqid = 79
         public HttpResponseMessage GetCertificate(int reqid)
         {
-            Certificate cert = new Certificate();
+            Certificate cert = new Certificate();           
             string cerificate = cert.getCertificate(reqid);
             var resp = new HttpResponseMessage(HttpStatusCode.OK);          
             resp.Content = new StringContent(cerificate, System.Text.Encoding.UTF8, "application/json");            
@@ -53,7 +52,7 @@ namespace CertificateAdmin
         {
             string CertID;
             int requestID;
-            Certificate cert = new Certificate();
+            Certificate cert = new Certificate();            
             CertID = cert.createCertifcate(hostname);
             if (String.Equals(CertID,"Exsits")==true)
             {

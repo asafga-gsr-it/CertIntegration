@@ -72,8 +72,18 @@ namespace SQLite
             command.ExecuteNonQuery();
             closeConnection();
         }
+
+        // Inserts into Tables Hoosts 
+        public void insertTableHost(string hostname,string hash)
+        {
+            connectToDatabase();
+            string sql = "insert into Hosts  (HostID,Hash) values (" + "'" + hostname + "'" + "," + "'"+ hash +"'"+ ")";
+            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            command.ExecuteNonQuery();
+            closeConnection();
+        }
         // update  more info For The Certificate 
-        public void updateCertInfo(string Cert, int reqid)
+        public int  updateCertInfo(string Cert, int reqid)
         {
             string status;
             StreamWriter objFile = null;
@@ -94,12 +104,14 @@ namespace SQLite
                 SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
                 command.ExecuteNonQuery();
                 closeConnection();
+                return 0;
             }
             catch (Exception ex)
 
             {
                 status = ex.Message;
                 closeConnection();
+                return -1;
             }
         }
 
@@ -317,7 +329,7 @@ namespace SQLite
             try
             {
                // printTable();
-                string sql = "select * from Certificate where ExpirationDate<date('"+s+"')";
+                string sql = "select * from Certificate where ExpirationDate>date('"+s+"')";
            //    string sql = "select * from Certificate where ExpirationDate>date('2018-02-23 06:00:00')";
                 SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
                 SQLiteDataReader reader = command.ExecuteReader();
