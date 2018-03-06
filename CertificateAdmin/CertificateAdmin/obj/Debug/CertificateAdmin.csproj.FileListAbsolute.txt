@@ -91,6 +91,10 @@ c:\Users\Administrator\Documents\Visual Studio 2015\Projects\CertificateAdmin\Ce
 c:\Users\Administrator\Documents\Visual Studio 2015\Projects\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.dll
 c:\Users\Administrator\Documents\Visual Studio 2015\Projects\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.pdb
 C:\Users\Administrator\Documents\Visual Studio 2015\Projects\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\Interop.CERTADMINLib.dll
+C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\Interop.CERTCLILib.dll
+C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\Interop.CERTENROLLLib.dll
+C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.csproj.ResolveComReference.cache
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\ApplicationInsights.config
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\roslyn\csc.exe
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
@@ -180,10 +184,8 @@ C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\C
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Web.Http.Owin.xml
-C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\Interop.CERTADMINLib.dll
-C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\Interop.CERTCLILib.dll
-C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\Interop.CERTENROLLLib.dll
-C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.csproj.ResolveComReference.cache
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.dll
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.pdb
+C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Data.SQLite.EF6.dll
+C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Data.SQLite.Linq.dll
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.csprojResolveAssemblyReference.cache

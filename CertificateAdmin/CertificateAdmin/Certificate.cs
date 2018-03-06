@@ -250,10 +250,11 @@ namespace CertificateAdmin
             }
 
         }
-
-       public void  deleteFromStore(string subjectName)
+        /*Remove Certificate From CA Store -After renew Expired Certificate
+         *  */
+        public void  deleteFromStore(string subjectName)
         {
-            X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+             X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadWrite | OpenFlags.IncludeArchived);
 
             // You could also use a more specific find type such as X509FindType.FindByThumbprint
@@ -261,13 +262,15 @@ namespace CertificateAdmin
 
             foreach (var cert in col)
             {
-                Console.Out.WriteLine(cert.SubjectName.Name);
 
+                revokeCert(cert.SerialNumber);
                 // Remove the certificate
                 store.Remove(cert);
             }
             store.Close();
         }
+
+        /*Install Certificate On the Machine For future Renew Expired Certificate */
         public  int InstallCert(string Cert)
         {
 
@@ -289,6 +292,25 @@ namespace CertificateAdmin
 
             }
 
+        }
+
+        /*Revock Certificate */
+
+        public int revokeCert(string serialNumber)
+        {
+             
+            CCertConfig objCertConfig = new CCertConfig();
+            CCertAdmin objCertAdmin = new CCertAdmin();
+            try
+            {
+                string strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);//connect to the ca     
+                objCertAdmin.RevokeCertificate(strCAConfig, serialNumber, 0, DateTime.Now);
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return 1;
+            }
         }
 
     }
