@@ -188,4 +188,3 @@ C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\C
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.pdb
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Data.SQLite.EF6.dll
 C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\bin\System.Data.SQLite.Linq.dll
-C:\Users\Administrator\Source\Repos\CertAdmin\CertIntegration\CertificateAdmin\CertificateAdmin\obj\Debug\CertificateAdmin.csprojResolveAssemblyReference.cache

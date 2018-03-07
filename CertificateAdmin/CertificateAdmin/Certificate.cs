@@ -92,7 +92,7 @@ namespace CertificateAdmin
         {                  
             CCertConfig objCertConfig = new CCertConfig(); 
             CCertRequest objCertRequest = new CCertRequest();
-            CCertAdmin objCertAdmin = new CCertAdmin();
+            CCertAdmin objCertAdmin = new CCertAdmin(); 
             string strCAConfig;
             int iDisposition;
             int requestID;
@@ -219,6 +219,7 @@ namespace CertificateAdmin
             CX509Enrollment objEnroll = new CX509Enrollment();
             CCertConfig objCertConfig = new CCertConfig();
             CX500DistinguishedName objDN = new CX500DistinguishedName();
+            CCertAdmin objCertAdmin = new CCertAdmin();
             string strCAConfig;
             var inheritOptions = X509RequestInheritOptions.InheritPrivateKey |X509RequestInheritOptions.InheritSubjectFlag | X509RequestInheritOptions.InheritExtensionsFlag | X509RequestInheritOptions.InheritSubjectAltNameFlag; 
      
@@ -231,7 +232,8 @@ namespace CertificateAdmin
                 HostName = objDN.Name.ToString().Substring(3);
                 objEnroll.InitializeFromRequest(objPkcs10);//create enroll rquest
                 CertifcateStr = objEnroll.CreateRequest(EncodingType.XCN_CRYPT_STRING_BASE64);//crearte  new cert request
-                iDisposition=submitRequest(CertifcateStr,HostName);//submit cert to the ca
+                iDisposition=submitRequest(CertifcateStr,HostName);//submit cert to the ca           
+                objCertAdmin.ResubmitRequest(strCAConfig, iDisposition); //issue the Certificate
 
                 if  (iDisposition>0)//if cert was created delete the old cert from the table
                 {

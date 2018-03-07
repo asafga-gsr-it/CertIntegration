@@ -48,7 +48,7 @@ namespace SQLite
         // Creates a table Certificate
         public void createTable()
         {
-            string sql = "create table Certificate (certname varchar(50), status int,reqid int,RequestDate varchar(50),ExpirationDate DATETIME,Issuedby varchar(50),Issuedto varchar(50),certFlag varchar(50))";
+            string sql = "create table Certificate (certname varchar(50), status int,reqid int,RequestDate varchar(50),ExpirationDate DATETIME,Issuedby varchar(50),Issuedto varchar(50),certFlag varchar(50),serialnumber varchar(200))";
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
             command.ExecuteNonQuery();
         }
@@ -95,9 +95,10 @@ namespace SQLite
             string expiredDate = Convert.ToDateTime(expirtationdate).ToString("yyyy-MM-dd HH:mm:ss");
             string issuedby = cert.Issuer.ToString();
             string issuedto = cert.Subject.ToString();
+            string serialnumber = cert.GetSerialNumberString();
             File.Delete(reqid + ".cer");
             connectToDatabase();
-            string sql = "update Certificate set ExpirationDate="+"'"+ expiredDate + "'"+"," + "Issuedby=" + "'" + issuedby + "'" + "," + "Issuedto=" + "'" + issuedto + "'" +
+            string sql = "update Certificate set ExpirationDate="+"'"+ expiredDate + "'"+"," + "Issuedby=" + "'" + issuedby + "'" + "," + "Issuedto=" + "'" + issuedto + "'" +","+ "serialnumber="+"'"+ serialnumber + "'"+
             " where reqid=" + reqid;
             try
             {
@@ -274,7 +275,29 @@ namespace SQLite
                 closeConnection();             
             }
         }
+        public string returnCertSerialnumber(string hostname)
+        {
+            string status;
+            string serialnumber;        
+            try
+            {
+                connectToDatabase();
+                string sql = "select * from Certificate where certname=" + "'" + hostname + "'";
+                SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                SQLiteDataReader reader = command.ExecuteReader();
+                serialnumber = reader["serialnumber"].ToString();
+                closeConnection();
+                return serialnumber;
+            }
 
+            catch (Exception ex)
+
+            {
+                status = ex.Message;
+                closeConnection();
+                return status;
+            }
+        }
         public int returnCertInfo(string hostname)
         {
             string status;            

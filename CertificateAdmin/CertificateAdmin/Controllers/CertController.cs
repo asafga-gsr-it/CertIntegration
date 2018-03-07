@@ -10,8 +10,8 @@ using Newtonsoft.Json.Linq;
 
 namespace CertificateAdmin
 {
-    [Authorize]
-    [RequireHttps]
+   [Authorize]
+   [RequireHttps]
 
     [RoutePrefix("api/Cert")]
     public class CertController : ApiController
@@ -129,6 +129,22 @@ namespace CertificateAdmin
             return resp;
         }
 
-       
+        // create certifcate request
+        // POST /api/Cert/ReCreateCert? hostname = asaf
+        [Route("ReCreateCert")]
+        [HttpPost]
+        public int recreateCertifcate(string hostname)
+        {
+            int requestID;
+            string serialnumber;
+            SqlLite sql = new SqlLite();
+            Certificate cert = new Certificate();
+            requestID = sql.returnCertInfo(hostname);
+            serialnumber = sql.returnCertSerialnumber(hostname);
+            sql.deleteCertRecord(requestID);
+            cert.revokeCert(serialnumber);         
+            return CreateCertifcate(hostname);            
+        }
+
     }
 }
