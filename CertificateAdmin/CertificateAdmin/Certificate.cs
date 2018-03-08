@@ -147,6 +147,7 @@ namespace CertificateAdmin
 
             catch (Exception ex)
             {
+                      Console.Write(ex.Message);
                 return -2;
             }
         }
@@ -289,7 +290,7 @@ namespace CertificateAdmin
             catch (Exception ex)
 
             {
-
+                Console.Write(ex.Message);
                 return 1;
 
             }
@@ -311,6 +312,7 @@ namespace CertificateAdmin
             }
             catch (Exception ex)
             {
+                Console.Write(ex.Message);
                 return 1;
             }
         }

@@ -52,24 +52,33 @@ namespace CertificateAdmin
         {
             string CertID;
             int requestID;
-            Certificate cert = new Certificate();            
-            CertID = cert.createCertifcate(hostname);
-            if (String.Equals(CertID,"Exsits")==true)
-            {
-                return -2;
-            }
+            Certificate cert = new Certificate();
 
-            if (String.Equals(CertID, "Issued") == true)
+            try
             {
-                return -3;
-            }
+                CertID = cert.createCertifcate(hostname);
+                if (String.Equals(CertID, "Exsits") == true)
+                {
+                    return -2;
+                }
 
-            if (CertID.Contains("Error") == true)
+                if (String.Equals(CertID, "Issued") == true)
+                {
+                    return -3;
+                }
+
+                if (CertID.Contains("Error") == true)
+                {
+                    return 0;
+                }
+                requestID = cert.submitRequest(CertID, hostname);
+                return requestID;
+            }
+            catch (Exception ex)
             {
+                Console.Write(ex.Message);
                 return 0;
             }
-            requestID = cert.submitRequest(CertID, hostname);
-            return requestID;
 
         }
 
@@ -81,7 +90,15 @@ namespace CertificateAdmin
         public int unlockCertFlag(string hostname)
         {
             Certificate cert = new Certificate();
-            return cert.unlockCert(hostname);
+            try
+            {
+                return cert.unlockCert(hostname);
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                return -1;
+            }
         }
 
    
@@ -93,14 +110,23 @@ namespace CertificateAdmin
         {
             int reqid;
             string cerificate;
-            SqlLite sql = new SqlLite();
-            reqid =sql.returnCertInfo(hostname);
-            Certificate cert = new Certificate();
-            cerificate= cert.getCertificate(reqid);
-            JObject obj = JObject.Parse(cerificate);            
-            string name = (string)obj["CertValue"];
-            reqid =cert.RenewCert(name,reqid);
-            return reqid;
+            try
+            {
+
+                SqlLite sql = new SqlLite();
+                reqid = sql.returnCertInfo(hostname);
+                Certificate cert = new Certificate();
+                cerificate = cert.getCertificate(reqid);
+                JObject obj = JObject.Parse(cerificate);
+                string name = (string)obj["CertValue"];
+                reqid = cert.RenewCert(name, reqid);
+                return reqid;
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                return 0;
+            }
         }
 
 
@@ -115,7 +141,6 @@ namespace CertificateAdmin
             var resp = new HttpResponseMessage(HttpStatusCode.OK);
             SqlLite sql = new SqlLite();
             List<string> list = sql.certExpired();
-
             for (var i = 0; i < list.Count; i++)
             {
                
@@ -130,20 +155,53 @@ namespace CertificateAdmin
         }
 
         // create certifcate request
-        // POST /api/Cert/ReCreateCert? hostname = asaf
-        [Route("ReCreateCert")]
+        // POST /api/Cert/revokeCert? hostname = asaf
+        [Route("revokeCert")]
         [HttpPost]
-        public int recreateCertifcate(string hostname)
+        public string revokCertifcate(string hostname)
         {
             int requestID;
             string serialnumber;
             SqlLite sql = new SqlLite();
             Certificate cert = new Certificate();
-            requestID = sql.returnCertInfo(hostname);
-            serialnumber = sql.returnCertSerialnumber(hostname);
-            sql.deleteCertRecord(requestID);
-            cert.revokeCert(serialnumber);         
-            return CreateCertifcate(hostname);            
+
+            try
+            {
+                requestID = sql.returnCertInfo(hostname);
+                serialnumber = sql.returnCertSerialnumber(hostname);
+                sql.deleteCertRecord(requestID);
+                cert.revokeCert(serialnumber);
+                return "SUCCESS";
+            }
+
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+        }
+
+        // create certifcate request
+        // POST /api/Cert/ReCreateCert? hostname = asaf
+        [Route("ReCreateCert")]
+        [HttpPost]
+        public int recreateCertifcate(string hostname)
+        {
+            SqlLite sql = new SqlLite();
+            Certificate cert = new Certificate();
+
+            try
+            {
+                revokCertifcate(hostname);
+                return CreateCertifcate(hostname);
+            }
+
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                return 0;
+            }
+
         }
 
     }

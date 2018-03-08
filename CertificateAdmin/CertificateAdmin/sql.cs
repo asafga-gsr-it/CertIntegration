@@ -141,7 +141,7 @@ namespace SQLite
             }
             catch (Exception ex)
             {
-               
+                Console.Write(ex.Message);
                 closeConnection();
           
             }
