@@ -35,8 +35,11 @@ std::string RestUrl(std::string opreation,std::string  url,std::string  token,st
     {
         chunk = curl_slist_append(chunk,header.c_str());
     
-     
-        curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);   /*specify Header to Request*/ 
+        if (token!="token")
+        {
+            curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);   /*specify Header to Request*/ 
+        }
+        
         curl_easy_setopt(easyhandle, CURLOPT_URL,url.c_str());     /*specify URL to Request */ 
         curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, 0L);   /*verify the peer's SSL certificate*/
 
@@ -44,7 +47,8 @@ std::string RestUrl(std::string opreation,std::string  url,std::string  token,st
         {
           curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS,data.c_str()); /*specify data to POST to server*/
         }
-         
+        curl_easy_setopt(easyhandle, CURLOPT_PROXY, "");
+
         curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);   /* send all data to this function  to save the Return Value */  
         curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);/* the Data Return from the request will be writting in readBuffer */
         curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 60L); /* specify TimeOut  to Request */ 
@@ -72,13 +76,14 @@ int requestCert(std::string   hostname,std::string  token)
  
     serverurl+= "/api/Cert/Createreq?hostname=" + hostname; /* Create  the Url For The rest request */
     res=RestUrl("POST",serverurl,token,"data_to_send");/* Call  the Rest Function */
-
     if (res!="-1") /* Success Request  */
     {
       return std::atoi(res.c_str());        
     }
     return -1; 
 }
+
+
 /*Getting  Token For the Rest Requests from the server*/
 std::string requestToken(std::string clientid,std::string clientSecret)
 {
@@ -93,7 +98,7 @@ std::string requestToken(std::string clientid,std::string clientSecret)
     serverurl=url;
     serverurl+= "/Token";  /* Create  the Url For The rest request */ 
     
-    res=RestUrl("POST",serverurl,token,data.c_str()); /* Call  the Rest Function */
+    res=RestUrl("POST",serverurl,"token",data.c_str()); /* Call  the Rest Function */
     if (res=="-1") /*Error With the Rest Request*/
     {
       return "Error Connecting";
@@ -191,7 +196,7 @@ int main(int argc, char * argv[])
   createSigniture(); /*Getting Machine Info For the Token Request*/
   if (argv[2]!=NULL)  /*Checking if The Script Send Cert Reqid*/
   {
-     reqid=std::atoi(argv[2]);
+       reqid=std::atoi(argv[2]);       
   }
   /*Getting information from the Configuration file --url and file location to save the Certificate */
   f = fopen ("caw.conf" , "r");    
@@ -208,12 +213,13 @@ int main(int argc, char * argv[])
            errorMessage=token.c_str();
            goto result;
      }
-    
+   
       /*Create New Certificat Request -Didnt Get Reqid From the script*/
     if (argv[2]==NULL) 
     {
+            reqid=requestCert(argv[1],token.c_str()); 
+           
        
-        reqid=requestCert(argv[1],token.c_str()); 
          /*Error Handling */
         if (reqid==-1)
          {
