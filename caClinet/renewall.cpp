@@ -56,6 +56,7 @@ std::string renewallExpiredCert(std::string  token)
     curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);
     curl_easy_setopt(easyhandle, CURLOPT_URL,serverurl.c_str()); 
     curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(easyhandle, CURLOPT_PROXY, "");
     /* Create Post Request */ 
     curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS,data);
 
@@ -95,6 +96,7 @@ std::string requestToken(std::string clientid,std::string clientSecret)
     /* Create Post Request */ 
     curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS,data.c_str());
     curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(easyhandle, CURLOPT_PROXY, "");
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);

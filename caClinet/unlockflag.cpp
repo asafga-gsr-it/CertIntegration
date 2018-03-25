@@ -58,14 +58,15 @@ int unlockflag(std::string  token,std::string hostname)
     curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, 0L);
     /* Create Post Request */ 
     curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS,data);
+     curl_easy_setopt(easyhandle, CURLOPT_PROXY, "");
 
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
     curl_easy_setopt(easyhandle, CURLOPT_TIMEOUT, 360L);
-
     /*Perform Http Rest Post */
     res=curl_easy_perform(easyhandle);
+
     return  stoi(readBuffer.c_str());   
    
 }
@@ -95,6 +96,7 @@ std::string requestToken(std::string clientid,std::string clientSecret)
     /* Create Post Request */ 
     curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS,data.c_str());
     curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(easyhandle, CURLOPT_PROXY, "");
     /* send all data to this function  to save the Return Value */  
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
