@@ -62,7 +62,7 @@ namespace SQLite
             string sql = "create table Hosts (HostID varchar(100),Hash varchar(100))";
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
             command.ExecuteNonQuery();
-            sql = "insert into Hosts (HostID,Hash) values (" + "'" + "EC222391-ED2E-D25C-FAC8-E00E41AC8030" + "'" + "," + "'" + "3aba57e77256c95043152b8006264c3ccbf88413037044fc9fcc029146932616" + "'" + ")";
+            sql = "insert into Hosts (HostID,Hash) values (" + "'" + "A0CDF212-9D41-22CA-C17F-11EA829E0FC7" + "'" + "," + "'" + "7fff35386e386afb4587855855a1971cad152ce4df8e8c5517b5bcf67f18e103" + "'" + ")";
             command = new SQLiteCommand(sql, m_dbConnection);
             command.ExecuteNonQuery();
         }

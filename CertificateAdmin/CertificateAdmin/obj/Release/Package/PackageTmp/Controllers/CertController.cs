@@ -103,9 +103,9 @@ namespace CertificateAdmin
 
    
         // Renew Expired Certifcate
-        // POST /api/Cert/renewCert? hostname=asaf
+        // Get /api/Cert/renewCert? hostname=asaf
         [Route("renewCert")]
-        [HttpPost]
+        [HttpGet]
         public int renewCert(string hostname)
         {
             int reqid;
@@ -155,7 +155,7 @@ namespace CertificateAdmin
         }
 
         // create certifcate request
-        // POST /api/Cert/revokeCert? hostname = asaf
+        // Get /api/Cert/revokeCert? hostname = asaf
         [Route("revokeCert")]
         [HttpGet]
         public string revokCertifcate(string hostname)
@@ -182,9 +182,9 @@ namespace CertificateAdmin
         }
 
         // create certifcate request
-        // POST /api/Cert/ReCreateCert? hostname = asaf
+        // Get /api/Cert/ReCreateCert? hostname = asaf
         [Route("ReCreateCert")]
-        [HttpPost]
+        [HttpGet]
         public int recreateCertifcate(string hostname)
         {
             SqlLite sql = new SqlLite();
