@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="caProjectModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="cert">
+    <Key>
+      <PropertyRef Name="HostName" />
+    </Key>
+    <Property Name="HostName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="RequestId" Type="int" Nullable="false" />
+    <Property Name="status" Type="int" Nullable="false" />
+    <Property Name="CreationDate" Type="nvarchar" MaxLength="50" />
+    <Property Name="ExpiredDate" Type="datetime" />
+    <Property Name="CertFlag" Type="nchar" MaxLength="10" />
+    <Property Name="Issuedby" Type="nvarchar" MaxLength="50" />
+    <Property Name="serialnumber" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityContainer Name="caProjectModelStoreContainer">
+    <EntitySet Name="cert" EntityType="Self.cert" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

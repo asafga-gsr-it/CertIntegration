@@ -5,18 +5,21 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using CertificateAdmin;
-using SQLite;
 using Newtonsoft.Json.Linq;
 
 namespace CertificateAdmin
 {
-   [Authorize]
-   [RequireHttps]
+  // [Authorize]
+  // [RequireHttps]
 
     [RoutePrefix("api/Cert")]
     public class CertController : ApiController
     {
-          
+
+       
+     
+
+
         // return the certifacte status
         // GET api/Cert/GetStatus?reqid=79
         [Route("GetStatus")]
@@ -113,13 +116,13 @@ namespace CertificateAdmin
             try
             {
 
-                SqlLite sql = new SqlLite();
-                reqid = sql.returnCertInfo(hostname);
+                database db = new database();
+                var certReturn = db.returnCertInfo(hostname);
                 Certificate cert = new Certificate();
-                cerificate = cert.getCertificate(reqid);
+                cerificate = cert.getCertificate(certReturn.RequestId);
                 JObject obj = JObject.Parse(cerificate);
                 string name = (string)obj["CertValue"];
-                reqid = cert.RenewCert(name, reqid);
+                reqid = cert.RenewCert(name, certReturn.RequestId);
                 return reqid;
             }
             catch (Exception ex)
@@ -139,19 +142,22 @@ namespace CertificateAdmin
             int reqid;
             var jsonObject = new JObject();
             var resp = new HttpResponseMessage(HttpStatusCode.OK);
-            SqlLite sql = new SqlLite();
-            List<string> list = sql.certExpired();
-            for (var i = 0; i < list.Count; i++)
-            {
-               
-                jsonObject.Add("Host"+i, list[i]);
-             
-                reqid=renewCert(list[i]);
+            database db = new database();
+            
+              List<cert> certs = db.certExpired();
+              for (var i = 0; i < certs.Count; i++)
+              {
 
-                jsonObject.Add("reqid"+i, reqid);
-            }
+                  jsonObject.Add("Host"+i, certs[i].HostName);
+
+                  reqid=renewCert(certs[i].HostName);
+
+                  jsonObject.Add("reqid"+i, reqid);
+              }
+              
             resp.Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(jsonObject), System.Text.Encoding.UTF8, "application/json");
             return resp;
+            
         }
 
         // create certifcate request
@@ -160,17 +166,14 @@ namespace CertificateAdmin
         [HttpGet]
         public string revokCertifcate(string hostname)
         {
-            int requestID;
-            string serialnumber;
-            SqlLite sql = new SqlLite();
+            database db = new database();
             Certificate cert = new Certificate();
 
             try
             {
-                requestID = sql.returnCertInfo(hostname);
-                serialnumber = sql.returnCertSerialnumber(hostname);
-                sql.deleteCertRecord(requestID);
-                cert.revokeCert(serialnumber);
+                  var certReturn= db.returnCertInfo(hostname);              
+                  db.deleteCertRecord(certReturn.RequestId);
+                  cert.revokeCert(certReturn.serialnumber);
                 return "SUCCESS";
             }
 
@@ -187,7 +190,7 @@ namespace CertificateAdmin
         [HttpGet]
         public int recreateCertifcate(string hostname)
         {
-            SqlLite sql = new SqlLite();
+          
             Certificate cert = new Certificate();
 
             try

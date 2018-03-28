@@ -4,9 +4,8 @@ using System.Linq;
 using System.Web;
 using CERTENROLLLib;
 using CERTCLILib;
-using CERTADMINLib;
+//using CERTADMINLib;
 using System.IO;
-using SQLite;
 using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateAdmin
@@ -39,19 +38,19 @@ namespace CertificateAdmin
 
             try
             {
-                SqlLite sql = new SqlLite();        
+                database db = new database();        
                /*Check if there is allready request for the hostname so we dont need to create new one*/
-               
-                if (sql.checkCertExsits(hostName)==1)
+              
+                if (db.checkCertExsits(hostName)==1)
                 {                  
                     return "Exsits";
                 }
 
-                if (sql.checkCertExsits(hostName) == 2)
+                if (db.checkCertExsits(hostName) == 2)
                 {
                     return "Issued";
                 }
-                
+               
                 //create the private key (CX509CertificateRequestPkcs10 will initilizae from the private key)
                 objCSP.InitializeFromName("Microsoft Enhanced Cryptographic Provider v1.0");
                 objCSPs.Add(objCSP);
@@ -78,7 +77,7 @@ namespace CertificateAdmin
                 objDN.Encode("CN=" + hostName, X500NameFlags.XCN_CERT_NAME_STR_NONE); //create DistinguishedName
                 objPkcs10.Subject = objDN;  //initial the  DistinguishedName              
                 objEnroll.InitializeFromRequest(objPkcs10);  //init enrollement request             
-                CertifcateStr = objEnroll.CreateRequest(EncodingType.XCN_CRYPT_STRING_BASE64); //Certifcate  Request
+                CertifcateStr = objEnroll.CreateRequest(EncodingType.XCN_CRYPT_STRING_BASE64); //Certifcate  Request               
                 return CertifcateStr;
 
             }
@@ -94,7 +93,7 @@ namespace CertificateAdmin
         {                  
             CCertConfig objCertConfig = new CCertConfig(); 
             CCertRequest objCertRequest = new CCertRequest();
-            CCertAdmin objCertAdmin = new CCertAdmin(); 
+           // CCertAdmin objCertAdmin = new CCertAdmin(); 
             string strCAConfig;
             int iDisposition;
             int requestID;
@@ -105,8 +104,8 @@ namespace CertificateAdmin
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);//connect to the ca                              
                 iDisposition = objCertRequest.Submit(CR_IN_BASE64, certrequest, null, strCAConfig);   //submit the certiface request to the ca
                 requestID = objCertRequest.GetRequestId(); //get the requestid that was created -the certifacte is in pending status
-                SqlLite sql = new SqlLite();
-                sql.insertTable(hostname, iDisposition, requestID); //insert first certificate information
+                database db = new database();
+                db.insertTable(hostname, iDisposition, requestID); //insert first certificate information
            //   objCertAdmin.ResubmitRequest(strCAConfig, requestID);
                 return requestID; //return the reqid that was created for the certificate request in the pending queue 
             }
@@ -128,22 +127,23 @@ namespace CertificateAdmin
             try
             {
 
-                SqlLite sql = new SqlLite();
+                 database db = new database();              
                 /*Cheking if host name and req is belong to each other*/
-                if (sql.checkHostnameWithreqID(requestID, hostname))
+                
+                if (db.checkHostnameWithreqID(requestID, hostname))
                 {
                     return -6;
                 }
-                if (sql.checkcertFlag(requestID)) //checking if the client allreay consumed the certificate
+                if (db.checkcertFlag(requestID)) //checking if the client allreay consumed the certificate
                 {
                     return -3;
                 }
-      
- 
-              
+                
+
+
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);   //connect to the ca
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig); //retrive the certifcate status  from the ca 
-                sql.updateTable(iDisposition, requestID);  //updat certificate table with more information about the cert         
+                db.updateTable(iDisposition, requestID);  //updat certificate table with more information about the cert         
                 return iDisposition;//return cert status
             }
 
@@ -159,10 +159,10 @@ namespace CertificateAdmin
         {
 
             int iDisposition;
-            int status;
+            int status=0;
             string strCAConfig;
             string pstrCertificate;
-            SqlLite sql = new SqlLite();
+            database db = new database();
             pstrCertificate = null;
             CCertConfig objCertConfig = new CCertConfig();
             CCertRequest objCertRequest = new CCertRequest();
@@ -173,7 +173,7 @@ namespace CertificateAdmin
                 strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);//connect to the ca     
                 iDisposition = objCertRequest.RetrievePending(requestID, strCAConfig); //getting certificate stauts must before getting the cert
                 pstrCertificate = objCertRequest.GetCertificate(CR_OUT_BASE64);     //retrive the Certificate                 
-                status =sql.updateCertInfo(pstrCertificate, requestID); //update cert with more information
+                status =db.updateCertInfo(pstrCertificate, requestID); //update cert with more information
                 if (status == 0) 
                 {
                     Certificate cert = new Certificate { CertValue = pstrCertificate }; //creatre cert with JSON type
@@ -195,12 +195,12 @@ namespace CertificateAdmin
         //unlock certificate in stauts consumed that client can get it one more time
         public int unlockCert(string hostname)
         {
-            SqlLite sql = new SqlLite();
+            database db = new database();
             string status;
 
             try
             {
-                sql.updateCertFlag(hostname);    //unlock certificate             
+                db.updateCertFlag(hostname);    //unlock certificate             
                 return 0;
             }
 
@@ -222,7 +222,7 @@ namespace CertificateAdmin
             CX509Enrollment objEnroll = new CX509Enrollment();
             CCertConfig objCertConfig = new CCertConfig();
             CX500DistinguishedName objDN = new CX500DistinguishedName();
-            CCertAdmin objCertAdmin = new CCertAdmin();
+         //   CCertAdmin objCertAdmin = new CCertAdmin();
             string strCAConfig;
             var inheritOptions = X509RequestInheritOptions.InheritPrivateKey |X509RequestInheritOptions.InheritSubjectFlag | X509RequestInheritOptions.InheritExtensionsFlag | X509RequestInheritOptions.InheritSubjectAltNameFlag; 
      
@@ -236,12 +236,12 @@ namespace CertificateAdmin
                 objEnroll.InitializeFromRequest(objPkcs10);//create enroll rquest
                 CertifcateStr = objEnroll.CreateRequest(EncodingType.XCN_CRYPT_STRING_BASE64);//crearte  new cert request
                 iDisposition=submitRequest(CertifcateStr,HostName);//submit cert to the ca           
-                objCertAdmin.ResubmitRequest(strCAConfig, iDisposition); //issue the Certificate
+                //objCertAdmin.ResubmitRequest(strCAConfig, iDisposition); //issue the Certificate
 
                 if  (iDisposition>0)//if cert was created delete the old cert from the table
                 {
-                    SqlLite sql = new SqlLite();
-                    sql.deleteCertRecord(reqid);
+                    database db = new database();
+                    db.deleteCertRecord(reqid);
                     deleteFromStore(objDN.Name.ToString());
                     return iDisposition;
                 }
@@ -305,11 +305,11 @@ namespace CertificateAdmin
         {
              
             CCertConfig objCertConfig = new CCertConfig();
-            CCertAdmin objCertAdmin = new CCertAdmin();
+          //  CCertAdmin objCertAdmin = new CCertAdmin();
             try
             {
                 string strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);//connect to the ca     
-                objCertAdmin.RevokeCertificate(strCAConfig, serialNumber, 0, DateTime.Now);
+                //objCertAdmin.RevokeCertificate(strCAConfig, serialNumber, 0, DateTime.Now);
                 return 0;
             }
             catch (Exception ex)

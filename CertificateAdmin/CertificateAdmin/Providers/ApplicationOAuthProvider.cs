@@ -9,7 +9,6 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
-using SQLite;
 
 
 namespace CertificateAdmin.Providers
@@ -52,9 +51,9 @@ namespace CertificateAdmin.Providers
             string clientId;
             string clientSecret;
             context.TryGetFormCredentials(out clientId, out clientSecret);
-            SqlLite sql = new SqlLite();
+           // SqlLite sql = new SqlLite();
 
-            if (clientId!=null & sql.checkClientWithHash(clientSecret, clientId))
+            if (clientId!=null) //& sql.checkClientWithHash(clientSecret, clientId))
             {
                 context.SetError("invalid_grant", "Error The ClientId Is Not Recognize");
 
