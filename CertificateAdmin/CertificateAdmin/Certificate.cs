@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using CERTENROLLLib;
 using CERTCLILib;
-//using CERTADMINLib;
+using CERTADMINLib;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
@@ -222,7 +222,7 @@ namespace CertificateAdmin
             CX509Enrollment objEnroll = new CX509Enrollment();
             CCertConfig objCertConfig = new CCertConfig();
             CX500DistinguishedName objDN = new CX500DistinguishedName();
-         //   CCertAdmin objCertAdmin = new CCertAdmin();
+            CCertAdmin objCertAdmin = new CCertAdmin();
             string strCAConfig;
             var inheritOptions = X509RequestInheritOptions.InheritPrivateKey |X509RequestInheritOptions.InheritSubjectFlag | X509RequestInheritOptions.InheritExtensionsFlag | X509RequestInheritOptions.InheritSubjectAltNameFlag; 
      
@@ -235,14 +235,17 @@ namespace CertificateAdmin
                 HostName = objDN.Name.ToString().Substring(3);
                 objEnroll.InitializeFromRequest(objPkcs10);//create enroll rquest
                 CertifcateStr = objEnroll.CreateRequest(EncodingType.XCN_CRYPT_STRING_BASE64);//crearte  new cert request
-                iDisposition=submitRequest(CertifcateStr,HostName);//submit cert to the ca           
-                //objCertAdmin.ResubmitRequest(strCAConfig, iDisposition); //issue the Certificate
+                database db = new database();
+                var cert = db.returnCertInfo(HostName);             
+                db.deleteCertRecord(reqid);                
+                revokeCert(cert.serialnumber);
+                iDisposition =submitRequest(CertifcateStr,HostName);//submit cert to the ca           
+                objCertAdmin.ResubmitRequest(strCAConfig, iDisposition); //issue the Certificate
 
                 if  (iDisposition>0)//if cert was created delete the old cert from the table
                 {
-                    database db = new database();
-                    db.deleteCertRecord(reqid);
-                    deleteFromStore(objDN.Name.ToString());
+                 
+                    deleteFromStore(objDN.Name.ToString());             
                     return iDisposition;
                 }
                  return 0;
@@ -305,11 +308,11 @@ namespace CertificateAdmin
         {
              
             CCertConfig objCertConfig = new CCertConfig();
-          //  CCertAdmin objCertAdmin = new CCertAdmin();
+            CCertAdmin objCertAdmin = new CCertAdmin();
             try
             {
                 string strCAConfig = objCertConfig.GetConfig(CC_DEFAULTCONFIG);//connect to the ca     
-                //objCertAdmin.RevokeCertificate(strCAConfig, serialNumber, 0, DateTime.Now);
+                objCertAdmin.RevokeCertificate(strCAConfig, serialNumber, 0, DateTime.Now);
                 return 0;
             }
             catch (Exception ex)

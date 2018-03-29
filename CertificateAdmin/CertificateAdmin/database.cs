@@ -11,6 +11,7 @@ namespace CertificateAdmin
 {
     public class database
     {
+    
 
         // Inserts First info For The Certificate 
         public void   insertTable(string hostname, int status, int reqid)
@@ -46,9 +47,9 @@ namespace CertificateAdmin
 
                 using (caProjectEntities context = new caProjectEntities())
                 {
-
+                    
                     cert cetificate=context.certs.FirstOrDefault(r => r.RequestId == reqid);
-                    cetificate.ExpiredDate = Convert.ToDateTime(cert.NotAfter.ToString());
+                    cetificate.ExpiredDate = Convert.ToDateTime(cert.NotAfter.ToString("yyyy/MM/dd hh:mm:ss tt"));
                     cetificate.Issuedby = cert.Issuer.ToString();
                     cetificate.serialnumber = cert.GetSerialNumberString();
                     context.SaveChanges();                    
@@ -194,27 +195,21 @@ namespace CertificateAdmin
          //return all the expired certificates
         public List<cert> certExpired()
         {
-
-            DateTime s = DateTime.Now;
-            try
+            List<cert> result = null;
+             try
             {
                 using (caProjectEntities context = new caProjectEntities())
                 {
-                   
-                    var certs = context.certs.Where(r => r.ExpiredDate < s).ToList();
-                    return certs;
-                  
+                    result = context.certs.Where(certificate => certificate.ExpiredDate.HasValue && (certificate.ExpiredDate.Value > DateTime.Now)).ToList();
                 }
-            
             }
-
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
                 return null;
             }
-          
-           
+
+            return result;
         }
 
     }

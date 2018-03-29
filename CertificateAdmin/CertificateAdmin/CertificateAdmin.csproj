@@ -452,9 +452,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50026</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50026</IISUrl>
-          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>https://localhost:44310</IISAppRootUrl>
+          <IISUrl>http://10.26.181.18:50026</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
