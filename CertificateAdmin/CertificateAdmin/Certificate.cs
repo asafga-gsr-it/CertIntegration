@@ -238,7 +238,7 @@ namespace CertificateAdmin
                 database db = new database();
                 var cert = db.returnCertInfo(HostName);             
                 db.deleteCertRecord(reqid);                
-                revokeCert(cert.serialnumber);
+               // revokeCert(cert.serialnumber);
                 iDisposition =submitRequest(CertifcateStr,HostName);//submit cert to the ca           
                 objCertAdmin.ResubmitRequest(strCAConfig, iDisposition); //issue the Certificate
 

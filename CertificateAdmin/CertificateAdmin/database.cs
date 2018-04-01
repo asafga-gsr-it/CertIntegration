@@ -200,7 +200,7 @@ namespace CertificateAdmin
             {
                 using (caProjectEntities context = new caProjectEntities())
                 {
-                    result = context.certs.Where(certificate => certificate.ExpiredDate.HasValue && (certificate.ExpiredDate.Value > DateTime.Now)).ToList();
+                    result = context.certs.Where(certificate => certificate.ExpiredDate.HasValue && (certificate.ExpiredDate.Value < DateTime.Now)).ToList();
                 }
             }
             catch (Exception ex)

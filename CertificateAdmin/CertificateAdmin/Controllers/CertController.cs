@@ -140,23 +140,45 @@ namespace CertificateAdmin
         public HttpResponseMessage renewAllCerts()
         {
             int reqid;
-            var jsonObject = new JObject();
-            var resp = new HttpResponseMessage(HttpStatusCode.OK);
-            database db = new database();
-            
-              List<cert> certs = db.certExpired();
-              for (var i = 0; i < certs.Count; i++)
-              {
+            try
+            {
+                var jsonObject = new JObject();
+                var resp = new HttpResponseMessage(HttpStatusCode.OK);
+                database db = new database();
 
-                  jsonObject.Add("Host"+i, certs[i].HostName);
+                List<cert> certs = db.certExpired();
+                if (certs.Count>0)
+                {
+                    for (var i = 0; i < certs.Count; i++)
+                    {
 
-                  reqid=renewCert(certs[i].HostName);
+                        jsonObject.Add("Host" + i, certs[i].HostName);
 
-                  jsonObject.Add("reqid"+i, reqid);
-              }
+                        reqid = renewCert(certs[i].HostName);
+
+                        jsonObject.Add("reqid" + i, reqid);
+                    }
+
+
+                    resp.Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(jsonObject), System.Text.Encoding.UTF8, "application/json");
+                    return resp;
+                }
+                   
+                else
+                {
+                    resp.Content = new StringContent("No Certificates to Renew", System.Text.Encoding.UTF8, "application/json");
+                    return resp;
+                }
+                    
+                        
               
-            resp.Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(jsonObject), System.Text.Encoding.UTF8, "application/json");
-            return resp;
+            }
+            catch (Exception ex)
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.ExpectationFailed);
+                resp.Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(ex.Message), System.Text.Encoding.UTF8, "application/json");
+                return resp;
+            }
             
         }
 
