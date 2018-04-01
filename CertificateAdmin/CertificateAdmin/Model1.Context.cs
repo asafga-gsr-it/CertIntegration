@@ -26,5 +26,6 @@ namespace CertificateAdmin
         }
     
         public virtual DbSet<cert> certs { get; set; }
+        public virtual DbSet<signature> signature { get; set; }
     }
 }

@@ -15,5 +15,20 @@
   </EntityType>
   <EntityContainer Name="caProjectEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="cert" EntityType="Self.cert" />
+    <EntitySet Name="signature" EntityType="caProjectModel.signature" />
   </EntityContainer>
+  <EntityType Name="signature">
+    <Key>
+      <PropertyRef Name="uuid" />
+    </Key>
+    <Property Name="uuid" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="fscadate" Type="Int32" />
+    <Property Name="hash" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="timestamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+    <Property Name="ldtdisk" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="hwaddr" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="hostname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="signtime" Type="DateTime" Precision="0" />
+    <Property Name="host_time" Type="DateTime" Precision="0" />
+  </EntityType>
 </Schema>

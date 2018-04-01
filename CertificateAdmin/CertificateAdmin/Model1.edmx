@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="caProjectModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="caProjectModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="cert">
           <Key>
             <PropertyRef Name="HostName" />
@@ -18,11 +18,25 @@
           <Property Name="Issuedby" Type="nvarchar" MaxLength="50" />
           <Property Name="serialnumber" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="signature">
+          <Key>
+            <PropertyRef Name="uuid" />
+          </Key>
+          <Property Name="uuid" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="fscadate" Type="int" />
+          <Property Name="hash" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="timestamp" Type="timestamp" StoreGeneratedPattern="Computed" />
+          <Property Name="ldtdisk" Type="varchar" MaxLength="5" />
+          <Property Name="hwaddr" Type="varchar" MaxLength="20" />
+          <Property Name="hostname" Type="varchar" MaxLength="50" />
+          <Property Name="signtime" Type="date" />
+          <Property Name="host_time" Type="date" />
+        </EntityType>
         <EntityContainer Name="caProjectModelStoreContainer">
           <EntitySet Name="cert" EntityType="Self.cert" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="signature" EntityType="Self.signature" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="caProjectModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -41,7 +55,22 @@
         </EntityType>
         <EntityContainer Name="caProjectEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="cert" EntityType="Self.cert" />
+          <EntitySet Name="signature" EntityType="caProjectModel.signature" />
         </EntityContainer>
+        <EntityType Name="signature">
+          <Key>
+            <PropertyRef Name="uuid" />
+          </Key>
+          <Property Name="uuid" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="fscadate" Type="Int32" />
+          <Property Name="hash" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="timestamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="ldtdisk" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="hwaddr" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="hostname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="signtime" Type="DateTime" Precision="0" />
+          <Property Name="host_time" Type="DateTime" Precision="0" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -59,6 +88,21 @@
                 <ScalarProperty Name="CertFlag" ColumnName="CertFlag" />
                 <ScalarProperty Name="Issuedby" ColumnName="Issuedby" />
                 <ScalarProperty Name="serialnumber" ColumnName="serialnumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="signature">
+            <EntityTypeMapping TypeName="caProjectModel.signature">
+              <MappingFragment StoreEntitySet="signature">
+                <ScalarProperty Name="host_time" ColumnName="host_time" />
+                <ScalarProperty Name="signtime" ColumnName="signtime" />
+                <ScalarProperty Name="hostname" ColumnName="hostname" />
+                <ScalarProperty Name="hwaddr" ColumnName="hwaddr" />
+                <ScalarProperty Name="ldtdisk" ColumnName="ldtdisk" />
+                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
+                <ScalarProperty Name="hash" ColumnName="hash" />
+                <ScalarProperty Name="fscadate" ColumnName="fscadate" />
+                <ScalarProperty Name="uuid" ColumnName="uuid" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

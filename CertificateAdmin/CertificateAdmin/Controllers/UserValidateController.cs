@@ -15,7 +15,7 @@ namespace CertificateAdmin.Controllers
         [Route("InsertMachineInfo")]
         [HttpGet]
         ///api/User/InsertMachineInfo?userName=asaf&password=1234&clientid=1234&hash=1234
-        public HttpResponseMessage insertMachineInfo(string userName,string password,string clientid,string hash)
+        public HttpResponseMessage InsertMachineInfo(string userName,string password,string clientid,string hash)
         {
            var resp = new HttpResponseMessage(HttpStatusCode.OK);
            PrincipalContext pc = new PrincipalContext(ContextType.Domain, "YOURDOMAIN");//connect to the AD server           
