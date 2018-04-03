@@ -84,10 +84,30 @@ int requestCert(std::string   hostname,std::string  token)
 }
 
 
+/*Insert Non Ltd Machines to Hosts Table*/
+int  insertNonLtdMachine(std::string clientid,std::string clientSecret,std::string username,std::string password)
+{
+    std::string serverurl;
+    std::string res;
+   
+    serverurl=url;
+    //    ///api/User/InsertMachineInfo?userName=asaf&password=1234&clientid=1234&hash=1234
+    serverurl+="/api/User/InsertMachineInfo?userName="+username+"&"+"password="+password+"&"+"clientid="+clientid+"&"+"hash="+clientSecret;     /* Create  the Url For The rest request */ 
+    res=RestUrl("GET",serverurl,"token","data_to_send"); /* Call  the Rest Function */
+   if (res!="-1")
+    {
+      return std::atoi(res.c_str());          
+    }
+   return -1;
+    
+}
+
 /*Getting  Token For the Rest Requests from the server*/
 std::string requestToken(std::string clientid,std::string clientSecret)
 {
     std::string serverurl;
+     std::string username;
+      std::string password;
     std::string data;
     json_error_t error;
     json_t *root;
@@ -109,8 +129,23 @@ std::string requestToken(std::string clientid,std::string clientSecret)
     {
       token = json_string_value(json_object_get(root, "error_description"));
     }
+
+    if (token =="Needed Permissions")
+    {
+        cout<<"This Machine Doesnt Recognize as ltd We Needed more Permissions"<<endl;
+        cout<<"Please Enter Username:"<<endl;
+        cin>>username;
+        cout<<"Please Enter Password:"<<endl;
+        cin>>password;
+        insertNonLtdMachine(clientid,clientSecret,username,password);
+    }
      return token; 
 }
+
+
+
+
+
 /*Get Certificate Status*/
 int  getCertStatus(int   reqid,std::string hostName,std::string  token)
 {
