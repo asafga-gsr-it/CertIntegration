@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using CertificateAdmin;
 using Newtonsoft.Json.Linq;
+using static System.Net.WebRequestMethods;
 
 namespace CertificateAdmin
 {
@@ -16,20 +18,24 @@ namespace CertificateAdmin
     public class CertController : ApiController
     {
 
-       
-     
-
-
         // return the certifacte status
         // GET api/Cert/GetStatus?reqid=79
         [Route("GetStatus")]
         [HttpGet]
 
-        public int GetCertStatus(int reqid,string hostname)
+        public int GetRequestStatus(int reqid, string hostname)
         {
             Certificate cert = new Certificate();
-            return cert.retrieveStatus(reqid,hostname);          
+            return cert.RetrieveRequestStatus(reqid, hostname);
         }
+
+
+
+
+
+        // return the certifacte status
+        // GET api/Cert/GetStatus?reqid=79
+
 
 
         [Route("GetCert")]
@@ -39,9 +45,11 @@ namespace CertificateAdmin
         public HttpResponseMessage GetCertificate(int reqid)
         {
             Certificate cert = new Certificate();           
-            string cerificate = cert.getCertificate(reqid);
-            var resp = new HttpResponseMessage(HttpStatusCode.OK);          
-            resp.Content = new StringContent(cerificate, System.Text.Encoding.UTF8, "application/json");            
+            string cerificate = cert.GetCertificate(reqid);
+            var resp = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(cerificate, System.Text.Encoding.UTF8, "application/json")
+            };
             return resp;
         }
 
@@ -59,7 +67,7 @@ namespace CertificateAdmin
 
             try
             {
-                CertID = cert.createCertifcate(hostname);
+                CertID = cert.CreateCertifcate(hostname);
                 if (String.Equals(CertID, "Exsits") == true)
                 {
                     return -2;
@@ -74,7 +82,7 @@ namespace CertificateAdmin
                 {
                     return 0;
                 }
-                requestID = cert.submitRequest(CertID, hostname);
+                requestID = cert.SubmitRequest(CertID, hostname);
                 return requestID;
             }
             catch (Exception ex)
@@ -90,12 +98,12 @@ namespace CertificateAdmin
         // POST /api/Cert/unlockCert? hostname=asaf&clientid=1234
         [Route("unlockCert")]
         [HttpPost]
-        public int unlockCertFlag(string hostname)
+        public int UnlockCertificate(string hostname)
         {
             Certificate cert = new Certificate();
             try
             {
-                return cert.unlockCert(hostname);
+                return cert.UnlockCertifcate(hostname);
             }
             catch (Exception ex)
             {
@@ -109,17 +117,17 @@ namespace CertificateAdmin
         // Get /api/Cert/renewCert? hostname=asaf
         [Route("renewCert")]
         [HttpGet]
-        public int renewCert(string hostname)
+        public int RenewCertificate(string hostname)
         {
             int reqid;
             string cerificate;
             try
             {
 
-                database db = new database();
-                var certReturn = db.returnCertInfo(hostname);
+                Database db = new Database();
+                var certReturn = db.ReturnCertificateInformation(hostname);
                 Certificate cert = new Certificate();
-                cerificate = cert.getCertificate(certReturn.RequestId);
+                cerificate = cert.GetCertificate(certReturn.RequestId);
                 JObject obj = JObject.Parse(cerificate);
                 string name = (string)obj["CertValue"];
                 reqid = cert.RenewCert(name, certReturn.RequestId);
@@ -137,26 +145,50 @@ namespace CertificateAdmin
         // POST /api/Cert/renewAllCert
         [Route("renewAllCert")]
         [HttpPost]
-        public HttpResponseMessage renewAllCerts()
+        public HttpResponseMessage RenewAllCertificates()
         {
             int reqid;
-            var jsonObject = new JObject();
-            var resp = new HttpResponseMessage(HttpStatusCode.OK);
-            database db = new database();
-            
-              List<cert> certs = db.certExpired();
-              for (var i = 0; i < certs.Count; i++)
-              {
+            try
+            {
+                var jsonObject = new JObject();
+                var resp = new HttpResponseMessage(HttpStatusCode.OK);
+                Database db = new Database();
 
-                  jsonObject.Add("Host"+i, certs[i].HostName);
+                List<cert> certs = db.GetAllExpiredCertificates();
+                if (certs.Count>0)
+                {
+                    for (var i = 0; i < certs.Count; i++)
+                    {
 
-                  reqid=renewCert(certs[i].HostName);
+                        jsonObject.Add("Host" + i, certs[i].HostName);
 
-                  jsonObject.Add("reqid"+i, reqid);
-              }
+                        reqid = RenewCertificate(certs[i].HostName);
+
+                        jsonObject.Add("reqid" + i, reqid);
+                    }
+
+
+                    resp.Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(jsonObject), System.Text.Encoding.UTF8, "application/json");
+                    return resp;
+                }
+                   
+                else
+                {
+                    resp.Content = new StringContent("No Certificates to Renew", System.Text.Encoding.UTF8, "application/json");
+                    return resp;
+                }
+                    
+                        
               
-            resp.Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(jsonObject), System.Text.Encoding.UTF8, "application/json");
-            return resp;
+            }
+            catch (Exception ex)
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
+                {
+                    Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(ex.Message), System.Text.Encoding.UTF8, "application/json")
+                };
+                return resp;
+            }
             
         }
 
@@ -164,16 +196,16 @@ namespace CertificateAdmin
         // Get /api/Cert/revokeCert? hostname = asaf
         [Route("revokeCert")]
         [HttpGet]
-        public string revokCertifcate(string hostname)
+        public string RevokCertifcate(string hostname)
         {
-            database db = new database();
+            Database db = new Database();
             Certificate cert = new Certificate();
 
             try
             {
-                  var certReturn= db.returnCertInfo(hostname);              
-                  db.deleteCertRecord(certReturn.RequestId);
-                  cert.revokeCert(certReturn.serialnumber);
+                  var certReturn= db.ReturnCertificateInformation(hostname);              
+                  db.DeleteCertificateRecordFromDb(certReturn.RequestId);
+                  cert.RevokeCertificate(certReturn.serialnumber);
                 return "SUCCESS";
             }
 
@@ -188,14 +220,14 @@ namespace CertificateAdmin
         // Get /api/Cert/ReCreateCert? hostname = asaf
         [Route("ReCreateCert")]
         [HttpGet]
-        public int recreateCertifcate(string hostname)
+        public int RecreateCertifcate(string hostname)
         {
           
             Certificate cert = new Certificate();
 
             try
             {
-                revokCertifcate(hostname);
+                RevokCertifcate(hostname);
                 return CreateCertifcate(hostname);
             }
 

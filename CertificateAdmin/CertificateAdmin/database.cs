@@ -9,11 +9,12 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateAdmin
 {
-    public class database
+    public class Database
     {
+    
 
         // Inserts First info For The Certificate 
-        public void   insertTable(string hostname, int status, int reqid)
+        public void   InsertToCertificateTable(string hostname, int status, int reqid)
         {
             using (caProjectEntities context = new caProjectEntities())
             {
@@ -32,7 +33,7 @@ namespace CertificateAdmin
         }
 
         // update  more info For The Certificate 
-        public int updateCertInfo(string Cert, int reqid)
+        public int UpdateCertificateInfo(string Cert, int reqid)
         {
 
             StreamWriter objFile = null;            
@@ -46,9 +47,9 @@ namespace CertificateAdmin
 
                 using (caProjectEntities context = new caProjectEntities())
                 {
-
+                    
                     cert cetificate=context.certs.FirstOrDefault(r => r.RequestId == reqid);
-                    cetificate.ExpiredDate = Convert.ToDateTime(cert.NotAfter.ToString());
+                    cetificate.ExpiredDate = Convert.ToDateTime(cert.NotAfter.ToString("yyyy/MM/dd hh:mm:ss tt"));
                     cetificate.Issuedby = cert.Issuer.ToString();
                     cetificate.serialnumber = cert.GetSerialNumberString();
                     context.SaveChanges();                    
@@ -67,7 +68,7 @@ namespace CertificateAdmin
         }
 
         //update Certification Status and cert Flag
-        public void updateTable(int status, int reqid)
+        public void UpdateUnlockFlagAndStatus(int status, int reqid)
         {
             using (caProjectEntities context = new caProjectEntities())
             {
@@ -83,7 +84,7 @@ namespace CertificateAdmin
         }
 
         //checking if there is allready Request for the hostname
-        public int checkCertExsits(string hostname)
+        public int CheckIfCertificateExists(string hostname)
         {
             using (caProjectEntities context = new caProjectEntities())
             {
@@ -105,7 +106,7 @@ namespace CertificateAdmin
 
 
         //check if the cerrtficate allready consumed
-        public bool checkcertFlag(int reqid)
+        public bool CheckIfCertificateConsumed(int reqid)
         {
             try
             {
@@ -129,7 +130,7 @@ namespace CertificateAdmin
         }
 
         //check if the hostnameand redid belong to each other
-        public bool checkHostnameWithreqID(int reqid, string hostname)
+        public bool CheckIfReqIDBelongToHost(int reqid, string hostname)
         {
 
             try
@@ -154,7 +155,7 @@ namespace CertificateAdmin
         }
 
         //update certFlag for unlock
-        public void updateCertFlag(string hostname)
+        public void UnlockCetificate(string hostname)
         {
 
             using (caProjectEntities context = new caProjectEntities())
@@ -167,7 +168,7 @@ namespace CertificateAdmin
             
         }
 
-        public cert returnCertInfo(string hostname)
+        public cert ReturnCertificateInformation(string hostname)
         {
            
                 using (caProjectEntities context = new caProjectEntities())
@@ -179,7 +180,7 @@ namespace CertificateAdmin
         }
 
         //delete cert record for expired certificate 
-        public void deleteCertRecord(int reqid)
+        public void DeleteCertificateRecordFromDb(int reqid)
         {
 
             using (caProjectEntities context = new caProjectEntities())
@@ -192,29 +193,23 @@ namespace CertificateAdmin
         }
 
          //return all the expired certificates
-        public List<cert> certExpired()
+        public List<cert> GetAllExpiredCertificates()
         {
-
-            DateTime s = DateTime.Now;
-            try
+            List<cert> result = null;
+             try
             {
                 using (caProjectEntities context = new caProjectEntities())
                 {
-                   
-                    var certs = context.certs.Where(r => r.ExpiredDate < s).ToList();
-                    return certs;
-                  
+                    result = context.certs.Where(certificate => certificate.ExpiredDate.HasValue && (certificate.ExpiredDate.Value < DateTime.Now)).ToList();
                 }
-            
             }
-
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
                 return null;
             }
-          
-           
+
+            return result;
         }
 
     }

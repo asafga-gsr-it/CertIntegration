@@ -53,7 +53,7 @@ namespace CertificateAdmin.Providers
             context.TryGetFormCredentials(out clientId, out clientSecret);
            // SqlLite sql = new SqlLite();
 
-            if (clientId!=null) //& sql.checkClientWithHash(clientSecret, clientId))
+            if (clientId==null) //& sql.checkClientWithHash(clientSecret, clientId))
             {
                 context.SetError("invalid_grant", "Error The ClientId Is Not Recognize");
 

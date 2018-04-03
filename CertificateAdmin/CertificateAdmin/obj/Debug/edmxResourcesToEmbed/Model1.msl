@@ -15,5 +15,20 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="signature">
+      <EntityTypeMapping TypeName="caProjectModel.signature">
+        <MappingFragment StoreEntitySet="signature">
+          <ScalarProperty Name="host_time" ColumnName="host_time" />
+          <ScalarProperty Name="signtime" ColumnName="signtime" />
+          <ScalarProperty Name="hostname" ColumnName="hostname" />
+          <ScalarProperty Name="hwaddr" ColumnName="hwaddr" />
+          <ScalarProperty Name="ldtdisk" ColumnName="ldtdisk" />
+          <ScalarProperty Name="timestamp" ColumnName="timestamp" />
+          <ScalarProperty Name="hash" ColumnName="hash" />
+          <ScalarProperty Name="fscadate" ColumnName="fscadate" />
+          <ScalarProperty Name="uuid" ColumnName="uuid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>
