@@ -23,6 +23,7 @@ namespace CertificateAdmin
         public string CreateCertifcate(string hostName)
         {
 
+
             //  Create all the objects that will be required
             CX509CertificateRequestPkcs10 objPkcs10 = new CX509CertificateRequestPkcs10();
             CX509PrivateKey objPrivateKey = new CX509PrivateKey();
