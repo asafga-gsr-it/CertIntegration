@@ -8,7 +8,7 @@ using System.DirectoryServices.AccountManagement;
 //using SQLite;
 namespace CertificateAdmin.Controllers
 {
-    [RequireHttps]
+   // [RequireHttps]
     [RoutePrefix("api/User")]
     public class UserValidateController : ApiController
     {

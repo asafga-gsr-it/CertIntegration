@@ -2,3 +2,4 @@
 conf.txt
 *.cer
 /CertificateAdmin/.vs/CertificateAdmin/v15/Server/sqlite3
+/.vs/slnx.sqlite-journal

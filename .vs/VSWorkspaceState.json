@@ -2,7 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\CertificateAdmin",
-    "\\CertificateAdmin\\CertificateAdmin"
+    "\\CertificateAdmin\\CertificateAdmin",
+    "\\CertificateAdmin\\CertificateAdmin\\Providers"
   ],
   "SelectedNode": "\\CertificateAdmin\\CertificateAdmin.sln",
   "PreviewInSolutionExplorer": false
