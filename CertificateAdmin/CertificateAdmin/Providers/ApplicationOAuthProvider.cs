@@ -72,7 +72,7 @@ namespace CertificateAdmin.Providers
 
 
             }
-            else if (validity == "Error: LDT Deployment is not Signed.")
+            else if (validity == "Error: LDT Deployment is Not Valid!!")
             {
                 context.SetError("invalid_grant", "Needed Premissions");
             }
