@@ -106,8 +106,6 @@ int  insertNonLtdMachine(std::string clientid,std::string clientSecret,std::stri
 std::string requestToken(std::string clientid,std::string clientSecret)
 {
     std::string serverurl;
-     std::string username;
-      std::string password;
     std::string data;
     json_error_t error;
     json_t *root;
@@ -130,15 +128,6 @@ std::string requestToken(std::string clientid,std::string clientSecret)
       token = json_string_value(json_object_get(root, "error_description"));
     }
 
-    if (token =="Needed Permissions")
-    {
-        cout<<"This Machine Doesnt Recognize as ltd We Needed more Permissions"<<endl;
-        cout<<"Please Enter Username:"<<endl;
-        cin>>username;
-        cout<<"Please Enter Password:"<<endl;
-        cin>>password;
-        insertNonLtdMachine(clientid,clientSecret,username,password);
-    }
      return token; 
 }
 
@@ -216,7 +205,8 @@ void createSigniture()
 
 int main(int argc, char * argv[])
 {
- 
+  std::string username;
+  std::string password;
   int reqid;
   int  status;
   int certstatus;
@@ -242,7 +232,19 @@ int main(int argc, char * argv[])
   fileloc+=".cer";
 
 
-  token=requestToken(hashg,ouidg);  /*Getting the Token*/
+     token=requestToken(hashg,ouidg);  /*Getting the Token*/
+
+    if (token =="Needed Permissions")
+    {
+        cout<<"This Machine Doesnt Recognize as ltd We Needed more Permissions"<<endl;
+        cout<<"Please Enter Username:"<<endl;
+        cin>>username;
+        cout<<"Please Enter Password:"<<endl;
+        cin>>password;
+        insertNonLtdMachine(ouidg,hashg,username,password);
+        token=requestToken(hashg,ouidg);  /*Getting the Token*/
+    }
+
      if (token.find("Error",0)==0)  /*Error Getting Token Cannot Continue with out the token End Script With Error */
      {
            errorMessage=token.c_str();
