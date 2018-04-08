@@ -22,8 +22,8 @@ namespace CertificateAdmin.Controllers
            bool isValid = pc.ValidateCredentials(userName,password);   //validate the credentials from the Active Directory
             if (isValid) //if the user and password valid insert the new machine info
             {
-             //   SqlLite sql = new SqlLite();
-               // sql.insertTableHost(clientid, hash);
+                Database db = new Database();
+                db.InsertToSigntureTable(clientid, hash);
                 resp.Content = new StringContent("Success", System.Text.Encoding.UTF8, "application/xml");
                 return resp;
             }

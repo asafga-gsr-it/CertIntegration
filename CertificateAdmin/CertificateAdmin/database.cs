@@ -32,6 +32,24 @@ namespace CertificateAdmin
            
         }
 
+        // Inserts First info For The Certificate 
+        public void InsertToSigntureTable(string ClientId, string Hash)
+            {
+            using (caProjectEntities context = new caProjectEntities())
+            {
+
+                signature signature = new signature()
+                {
+                    hash = Hash,
+                    uuid= ClientId
+
+                };
+                context.signatures.Add(signature);
+                context.SaveChanges();
+            }
+
+        }
+
         // update  more info For The Certificate 
         public int UpdateCertificateInfo(string Cert, int reqid)
         {
