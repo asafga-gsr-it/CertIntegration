@@ -18,9 +18,9 @@ namespace CertificateAdmin.Controllers
         public HttpResponseMessage InsertMachineInfo(string userName,string password,string clientid,string hash)
         {
            var resp = new HttpResponseMessage(HttpStatusCode.OK);
-           PrincipalContext pc = new PrincipalContext(ContextType.Domain, "YOURDOMAIN");//connect to the AD server           
-           bool isValid = pc.ValidateCredentials(userName,password);   //validate the credentials from the Active Directory
-            if (isValid) //if the user and password valid insert the new machine info
+          // PrincipalContext pc = new PrincipalContext(ContextType.Domain, "YOURDOMAIN");//connect to the AD server           
+           //bool isValid = pc.ValidateCredentials(userName,password);   //validate the credentials from the Active Directory
+            if (1==1) //if the user and password valid insert the new machine info
             {
                 Database db = new Database();
                 db.InsertToSigntureTable(clientid, hash);
