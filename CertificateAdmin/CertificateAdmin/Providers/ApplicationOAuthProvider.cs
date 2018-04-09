@@ -66,18 +66,26 @@ namespace CertificateAdmin.Providers
             string clientSecret;
             string validity;
             context.TryGetFormCredentials(out clientId, out clientSecret);
-            validity = CheckValidityMachine(clientId, clientSecret);
 
-            if (validity == "LDT Deployment is Not Valid!!") 
+            Database db = new Database();
+            bool result=db.CheckIfMachineExists(clientId, clientSecret);
+
+            
+            if (result==false)
             {
-                context.SetError("invalid_grant", "Error The ClientId Is Not Recognize");
+                validity = CheckValidityMachine(clientId, clientSecret);
+                if (validity == "LDT Deployment is Not Valid!!")
+                {
+                    context.SetError("invalid_grant", "Error The ClientId Is Not Recognize");
 
 
-            }
-            else if (validity == "LDT Deployment is not Signed.'")
-            {
-                context.SetError("invalid_grant", "Needed Premissions");
-            }
+                }
+                else if (validity == "LDT Deployment is not Signed.'")
+                {
+                    context.SetError("invalid_grant", "Needed Premissions");
+                }
+            }        
+           
             else
             {
                 context.Validated(clientId);

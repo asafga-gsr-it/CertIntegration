@@ -230,5 +230,21 @@ namespace CertificateAdmin
             return result;
         }
 
+        //checking if there is allready Request for the hostname
+        public bool CheckIfMachineExists(string hostid,string hase)
+        {
+            using (caProjectEntities context = new caProjectEntities())
+            {
+
+                signature machine = context.signatures.FirstOrDefault(r => r.uuid == hostid);
+                if (machine.hash==hase)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+        }
+
     }
 }

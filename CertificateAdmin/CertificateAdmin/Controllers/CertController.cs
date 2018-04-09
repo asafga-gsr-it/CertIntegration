@@ -11,7 +11,7 @@ using static System.Net.WebRequestMethods;
 
 namespace CertificateAdmin
 {
-  // [Authorize]
+     [Authorize]
   // [RequireHttps]
 
     [RoutePrefix("api/Cert")]
