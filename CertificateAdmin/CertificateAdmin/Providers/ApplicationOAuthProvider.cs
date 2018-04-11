@@ -11,6 +11,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
+using System.Configuration;
+
 
 
 namespace CertificateAdmin.Providers
@@ -49,7 +51,8 @@ namespace CertificateAdmin.Providers
         public string CheckValidityMachine(string clientId,string Hash)
         {
             string result;
-            string url = "https://linuxinfra.wdf.sap.corp/ldt/webapp/production/ldt-get-signature.php?uuid=$HOST_UUID&hash=$hash";
+            string url = ConfigurationManager.AppSettings["ValidtyMachineUrl"]+"uuid="+clientId+"&hash="+Hash;
+           // string url = "https://linuxinfra.wdf.sap.corp/ldt/webapp/production/ldt-get-signature.php?uuid=$HOST_UUID&hash=$hash";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -68,8 +71,7 @@ namespace CertificateAdmin.Providers
             context.TryGetFormCredentials(out clientId, out clientSecret);
 
             Database db = new Database();
-            bool result=db.CheckIfMachineExists(clientId, clientSecret);
-
+            bool result=db.CheckIfMachineExists(clientSecret, clientId);
             
             if (result==false)
             {

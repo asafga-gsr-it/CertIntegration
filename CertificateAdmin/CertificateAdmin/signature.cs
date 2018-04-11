@@ -23,5 +23,6 @@ namespace CertificateAdmin
         public string hostname { get; set; }
         public Nullable<System.DateTime> signtime { get; set; }
         public Nullable<System.DateTime> host_time { get; set; }
+        public string username { get; set; }
     }
 }

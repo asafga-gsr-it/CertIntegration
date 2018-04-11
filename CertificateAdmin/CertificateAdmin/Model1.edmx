@@ -31,6 +31,7 @@
           <Property Name="hostname" Type="varchar" MaxLength="50" />
           <Property Name="signtime" Type="date" />
           <Property Name="host_time" Type="date" />
+          <Property Name="username" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityContainer Name="caProjectModelStoreContainer">
           <EntitySet Name="cert" EntityType="Self.cert" Schema="dbo" store:Type="Tables" />
@@ -70,6 +71,7 @@
           <Property Name="hostname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="signtime" Type="DateTime" Precision="0" />
           <Property Name="host_time" Type="DateTime" Precision="0" />
+          <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -94,6 +96,7 @@
           <EntitySetMapping Name="signature">
             <EntityTypeMapping TypeName="caProjectModel.signature">
               <MappingFragment StoreEntitySet="signature">
+                <ScalarProperty Name="username" ColumnName="username" />
                 <ScalarProperty Name="host_time" ColumnName="host_time" />
                 <ScalarProperty Name="signtime" ColumnName="signtime" />
                 <ScalarProperty Name="hostname" ColumnName="hostname" />

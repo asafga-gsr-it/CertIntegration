@@ -30,5 +30,6 @@
     <Property Name="hostname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="signtime" Type="DateTime" Precision="0" />
     <Property Name="host_time" Type="DateTime" Precision="0" />
+    <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
   </EntityType>
 </Schema>

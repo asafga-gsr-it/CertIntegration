@@ -156,7 +156,7 @@ namespace CertificateAdmin
                 using (caProjectEntities context = new caProjectEntities())
                 {
                     cert cetificate = context.certs.FirstOrDefault(r => r.RequestId == reqid);
-                    if (cetificate.HostName == hostname)
+                    if (cetificate != null && cetificate.HostName == hostname)
                     {
                         return  false;
                     }
@@ -233,14 +233,23 @@ namespace CertificateAdmin
         //checking if there is allready Request for the hostname
         public bool CheckIfMachineExists(string hostid,string hase)
         {
-            using (caProjectEntities context = new caProjectEntities())
+            try
             {
-
-                signature machine = context.signatures.FirstOrDefault(r => r.uuid == hostid);
-                if (machine.hash==hase)
+                using (caProjectEntities context = new caProjectEntities())
                 {
-                    return true;
+
+                    signature machine = context.signatures.FirstOrDefault(r => r.uuid == hostid);
+                    if (machine != null && machine.hash == hase)
+                    {
+                        return true;
+                    }
+                    return false;
                 }
+            }
+
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
                 return false;
             }
 

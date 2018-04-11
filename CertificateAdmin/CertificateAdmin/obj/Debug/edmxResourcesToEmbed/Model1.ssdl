@@ -26,6 +26,7 @@
     <Property Name="hostname" Type="varchar" MaxLength="50" />
     <Property Name="signtime" Type="date" />
     <Property Name="host_time" Type="date" />
+    <Property Name="username" Type="varchar" MaxLength="50" />
   </EntityType>
   <EntityContainer Name="caProjectModelStoreContainer">
     <EntitySet Name="cert" EntityType="Self.cert" Schema="dbo" store:Type="Tables" />

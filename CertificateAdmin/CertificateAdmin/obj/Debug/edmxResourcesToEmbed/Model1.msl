@@ -18,6 +18,7 @@
     <EntitySetMapping Name="signature">
       <EntityTypeMapping TypeName="caProjectModel.signature">
         <MappingFragment StoreEntitySet="signature">
+          <ScalarProperty Name="username" ColumnName="username" />
           <ScalarProperty Name="host_time" ColumnName="host_time" />
           <ScalarProperty Name="signtime" ColumnName="signtime" />
           <ScalarProperty Name="hostname" ColumnName="hostname" />
