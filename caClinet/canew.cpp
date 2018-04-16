@@ -12,6 +12,24 @@ std::string fileloc;
 std::string ouidg;
 std::string  hashg;
 
+/*running linux command*/
+std::string getCmdOutput(const std::string& mStr)
+{
+    std::string result, file;
+    FILE* pipe{popen(mStr.c_str(), "r")};
+    char buffer[256];
+
+    while(fgets(buffer, sizeof(buffer), pipe) != NULL)
+    {
+        file = buffer;
+        result += file.substr(0, file.size() - 1);
+    }
+
+    pclose(pipe);
+    return result;
+}
+
+
 /*copy the value return from the HTTP Get to the memorty*/
 size_t WriteCallback(char *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -19,7 +37,7 @@ size_t WriteCallback(char *contents, size_t size, size_t nmemb, void *userp)
     return size * nmemb;
 }
 /*Create And Excute Rest Request*/
-std::string RestUrl(std::string opreation,std::string  url,std::string  token,std::string data)
+std::string RestUrl(std::string opreation,std::string  url,std::string  token,std::string data="data_to_send")
 {
     curl_global_init(CURL_GLOBAL_ALL); /*Global libcurl initialisation*/
     std::string readBuffer;
@@ -35,11 +53,10 @@ std::string RestUrl(std::string opreation,std::string  url,std::string  token,st
     {
         chunk = curl_slist_append(chunk,header.c_str());
     
-        if (token!="token")
-        {
-            curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);   /*specify Header to Request*/ 
+        if (token.length()>0)
+        {   
+           curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, chunk);   /*specify Header to Request*/ 
         }
-        
         curl_easy_setopt(easyhandle, CURLOPT_URL,url.c_str());     /*specify URL to Request */ 
         curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, 0L);   /*verify the peer's SSL certificate*/
 
@@ -55,7 +72,6 @@ std::string RestUrl(std::string opreation,std::string  url,std::string  token,st
 
         
         res=curl_easy_perform(easyhandle); /*Perform Http Rest Get or Post */
-
         curl_easy_cleanup(easyhandle);  /* End a libcurl easy handle */ 
         if (res!=0)  /* Error Occured return -1 the handler the error */ 
         {
@@ -75,7 +91,7 @@ int requestCert(std::string   hostname,std::string  token)
     serverurl=url;
  
     serverurl+= "/api/Cert/Createreq?hostname=" + hostname; /* Create  the Url For The rest request */
-    res=RestUrl("POST",serverurl,token,"data_to_send");/* Call  the Rest Function */
+    res=RestUrl("POST",serverurl,token);/* Call  the Rest Function */
     if (res!="-1") /* Success Request  */
     {
       return std::atoi(res.c_str());        
@@ -93,7 +109,7 @@ int  insertNonLtdMachine(std::string clientid,std::string clientSecret,std::stri
     serverurl=url;
     //    ///api/User/InsertMachineInfo?userName=asaf&password=1234&clientid=1234&hash=1234
     serverurl+="/api/User/InsertMachineInfo?userName="+username+"&"+"password="+password+"&"+"clientid="+clientid+"&"+"hash="+clientSecret;     /* Create  the Url For The rest request */ 
-    res=RestUrl("GET",serverurl,"token","data_to_send"); /* Call  the Rest Function */
+    res=RestUrl("GET",serverurl,""); /* Call  the Rest Function */
    if (res!="-1")
     {
       return std::atoi(res.c_str());          
@@ -115,8 +131,7 @@ std::string requestToken(std::string clientid,std::string clientSecret)
     data = "client_id="+clientid+"&client_secret="+clientSecret+"&grant_type=client_credentials"; /*Data For the Post Filed for  Rest Request */  
     serverurl=url;
     serverurl+= "/Token";  /* Create  the Url For The rest request */ 
-    
-    res=RestUrl("POST",serverurl,"token",data.c_str()); /* Call  the Rest Function */
+    res=RestUrl("POST",serverurl,"",data.c_str()); /* Call  the Rest Function */
     if (res=="-1") /*Error With the Rest Request*/
     {
       return "Error Connecting";
@@ -127,7 +142,6 @@ std::string requestToken(std::string clientid,std::string clientSecret)
     {
       token = json_string_value(json_object_get(root, "error_description"));
     }
-
      return token; 
 }
 
@@ -144,7 +158,7 @@ int  getCertStatus(int   reqid,std::string hostName,std::string  token)
     serverurl=url;
     
     serverurl+="/api/Cert/GetStatus?reqid="+std::to_string(reqid)+"&"+"hostname="+hostName;     /* Create  the Url For The rest request */ 
-    res=RestUrl("GET",serverurl,token,"data_to_send"); /* Call  the Rest Function */
+    res=RestUrl("GET",serverurl,token); /* Call  the Rest Function */
    if (res!="-1")
     {
       return std::atoi(res.c_str());          
@@ -163,7 +177,7 @@ int  getCertificate(int   reqid,std::string  token)
   std::string serverurl;
   serverurl=url;
   serverurl+="/api/Cert/GetCert?reqid="+std::to_string(reqid);     /* Create  the Url For The rest request */   
-  res=RestUrl("GET",serverurl,token,"data_to_send"); /* Call  the Rest Function */
+  res=RestUrl("GET",serverurl,token); /* Call  the Rest Function */
   if (res!="-1" and  not(strstr(res.c_str(),"error"))) /*Error Getting the Certificate from the server*/
   {
       root = json_loads(res.c_str(), 0, &error);
@@ -178,29 +192,23 @@ int  getCertificate(int   reqid,std::string  token)
     }
     return -1;
 }
+
 /*Getting Machine Info To Validate the machine for the token Request*/
 void createSigniture()
 {
-  FILE *fp;
-  char hashtemp[300];
-  char ouidtemp[300];
-
-  fp = popen("./sha.sh", "r");  /* Open the command for reading. */
-  if (fp == NULL) {
-    printf("Failed to run command\n" );
-    exit(1);
-  }
+ std::string root,timeset,timesetnumber,tm,hashtmp;  
   
-  fgets(hashtemp, sizeof(hashtemp)-1, fp);  /* Read the output a line at a time - output it. */
-  fgets(ouidtemp, sizeof(ouidtemp)-1, fp);  /* Read the output a line at a time - output it. */
-      /* close */
-  pclose(fp);
-    hashtemp[strcspn(hashtemp, "\n")] = 0;
-    ouidtemp[strcspn(ouidtemp, "\n")] = 0;
-
-    hashg=hashtemp;
-    ouidg=ouidtemp;
+ root=getCmdOutput(R"(df -h /mnt | grep / | awk {'print $1'})");
+ ouidg=getCmdOutput(R"(/usr/sbin/dmidecode --string system-uuid  2>/dev/null | egrep -io "^[0-9A-F]{8}-[0-9A-F]{4}-[1-4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$" || $(which dmidecode 2>/dev/null) --string system-uuid  2>/dev/null |egrep -io "^[0-9A-F]{8}-[0-9A-F]{4}-[1-4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$" || cat /sys/devices/virtual/dmi/id/product_uuid 2>/dev/null)");
+ timeset="/sbin/tune2fs -l " + root+R"(| grep "Filesystem created")"+R"(|sed 's/.*created://;s/[ \t]*//')";
+ timesetnumber=R"(date -d ")"+getCmdOutput(timeset)+R"(" "+%s")";
+ tm=getCmdOutput(timesetnumber);
+ hashtmp="echo "+tm+ouidg+R"(| sha256sum |awk '{print $1}')";
+ hashg =getCmdOutput(hashtmp);
 }
+
+
+
 
 
 int main(int argc, char * argv[])
@@ -233,8 +241,7 @@ int main(int argc, char * argv[])
 
 
      token=requestToken(hashg,ouidg);  /*Getting the Token*/
-
-    if (token =="Needed Permissions")
+    if (token =="Needed Premissions")
     {
         cout<<"This Machine Doesnt Recognize as ltd We Needed more Permissions"<<endl;
         cout<<"Please Enter Username:"<<endl;
