@@ -23,7 +23,7 @@ namespace CertificateAdmin.Controllers
             if (userName =="asaf") //if the user and password valid insert the new machine info
             {
                 Database db = new Database();
-                db.InsertToSigntureTable(clientid, hash);
+                db.InsertToSigntureTable(clientid, hash, userName);
                 resp.Content = new StringContent("Success", System.Text.Encoding.UTF8, "application/xml");
                 return resp;
             }

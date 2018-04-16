@@ -33,15 +33,18 @@ namespace CertificateAdmin
         }
 
         // Inserts First info For The Certificate 
-        public void InsertToSigntureTable(string ClientId, string Hash)
+        public void InsertToSigntureTable(string ClientId, string Hash,string Username)
             {
             using (caProjectEntities context = new caProjectEntities())
             {
-
+                DateTime dt = DateTime.Now;
                 signature signature = new signature()
                 {
                     hash = Hash,
-                    uuid= ClientId
+                    uuid = ClientId,
+                    username = Username,
+                    timestamp=BitConverter.GetBytes(dt.Ticks),
+                    ldtdisk="N"
 
                 };
                 context.signatures.Add(signature);
