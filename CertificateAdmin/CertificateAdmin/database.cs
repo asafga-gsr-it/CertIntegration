@@ -258,5 +258,24 @@ namespace CertificateAdmin
 
         }
 
+        // Inserts Error Message
+        public void InsertToErrorMessageTable(string hostname,int requestid,string errorMessage)
+        {
+            using (caProjectEntities context = new caProjectEntities())
+            {
+                Error_Log erroLog = new Error_Log()
+                {
+                    ErrorMessage = errorMessage,
+                    Request = requestid,
+                    CreateDate =DateTime.Now.ToString(),
+                    HostName = hostname
+
+                };
+                context.Error_Logs.Add(erroLog);
+                context.SaveChanges();
+            }
+
+        }
+
     }
 }

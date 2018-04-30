@@ -84,6 +84,8 @@ namespace CertificateAdmin
             }
             catch (Exception ex)
             {
+                Database db = new Database();
+                db.InsertToErrorMessageTable(hostName,0,ex.Message);//insert Error Message into The Error Table Log In The DataBase
                 return "Error"+ex.Message;
             }
         }
@@ -114,6 +116,8 @@ namespace CertificateAdmin
             catch (Exception ex)
             {
                 errorStatus = ex.Message;
+                Database db = new Database();
+                db.InsertToErrorMessageTable(hostname,0, ex.Message);//insert Error Message into The Error Table Log In The DataBase
                 return 0;
             }
      }
@@ -150,7 +154,8 @@ namespace CertificateAdmin
 
             catch (Exception ex)
             {
-                      Console.Write(ex.Message);
+                Database db = new Database();
+                db.InsertToErrorMessageTable(hostname, requestID, ex.Message);//insert Error Message into The Error Table Log In The DataBase
                 return -2;
             }
         }
@@ -190,6 +195,8 @@ namespace CertificateAdmin
 
             catch (Exception ex)
             {
+                   
+                db.InsertToErrorMessageTable("", requestID, ex.Message);//insert Error Message into The Error Table Log In The DataBase
                 return "error"+ex.Message;
             }
         }
@@ -207,6 +214,7 @@ namespace CertificateAdmin
 
             catch (Exception ex)
             {
+                db.InsertToErrorMessageTable(hostname,0, ex.Message);//insert Error Message into The Error Table Log In The DataBase
                 status = ex.Message;
                 return -1;
             }
@@ -255,6 +263,8 @@ namespace CertificateAdmin
             catch (Exception ex)
             {
                 status = ex.Message;
+                Database db = new Database();
+                db.InsertToErrorMessageTable("", reqid, ex.Message);//insert Error Message into The Error Table Log In The DataBase
                 return 1;
             }
 
@@ -294,9 +304,10 @@ namespace CertificateAdmin
             }
 
             catch (Exception ex)
-
             {
-                Console.Write(ex.Message);
+
+                Database db = new Database();
+                db.InsertToErrorMessageTable("",0, ex.Message);//insert Error Message into The Error Table Log In The DataBase
                 return 1;
 
             }
@@ -318,7 +329,8 @@ namespace CertificateAdmin
             }
             catch (Exception ex)
             {
-                Console.Write(ex.Message);
+                Database db = new Database();
+                db.InsertToErrorMessageTable("", 0, ex.Message);//insert Error Message into The Error Table Log In The DataBase
                 return 1;
             }
         }

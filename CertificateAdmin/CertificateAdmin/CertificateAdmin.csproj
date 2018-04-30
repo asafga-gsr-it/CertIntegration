@@ -256,6 +256,9 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserValidateController.cs" />
     <Compile Include="database.cs" />
+    <Compile Include="Error_Log.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

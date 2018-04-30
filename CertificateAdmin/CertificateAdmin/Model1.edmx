@@ -18,6 +18,16 @@
           <Property Name="Issuedby" Type="nvarchar" MaxLength="50" />
           <Property Name="serialnumber" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="Error_Log">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HostName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Request" Type="int" />
+          <Property Name="ErrorMessage" Type="nvarchar(max)" />
+          <Property Name="CreateDate" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="signature">
           <Key>
             <PropertyRef Name="uuid" />
@@ -35,6 +45,7 @@
         </EntityType>
         <EntityContainer Name="caProjectModelStoreContainer">
           <EntitySet Name="cert" EntityType="Self.cert" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Error_Log" EntityType="Self.Error_Log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="signature" EntityType="Self.signature" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -57,6 +68,7 @@
         <EntityContainer Name="caProjectEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="cert" EntityType="Self.cert" />
           <EntitySet Name="signature" EntityType="caProjectModel.signature" />
+          <EntitySet Name="Error_Log" EntityType="caProjectModel.Error_Log" />
         </EntityContainer>
         <EntityType Name="signature">
           <Key>
@@ -72,6 +84,16 @@
           <Property Name="signtime" Type="DateTime" Precision="0" />
           <Property Name="host_time" Type="DateTime" Precision="0" />
           <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Error_Log">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HostName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Request" Type="Int32" />
+          <Property Name="ErrorMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -106,6 +128,17 @@
                 <ScalarProperty Name="hash" ColumnName="hash" />
                 <ScalarProperty Name="fscadate" ColumnName="fscadate" />
                 <ScalarProperty Name="uuid" ColumnName="uuid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Error_Log">
+            <EntityTypeMapping TypeName="caProjectModel.Error_Log">
+              <MappingFragment StoreEntitySet="Error_Log">
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ErrorMessage" ColumnName="ErrorMessage" />
+                <ScalarProperty Name="Request" ColumnName="Request" />
+                <ScalarProperty Name="HostName" ColumnName="HostName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

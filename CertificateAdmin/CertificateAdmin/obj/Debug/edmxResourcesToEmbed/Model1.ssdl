@@ -13,6 +13,16 @@
     <Property Name="Issuedby" Type="nvarchar" MaxLength="50" />
     <Property Name="serialnumber" Type="nvarchar" MaxLength="50" />
   </EntityType>
+  <EntityType Name="Error_Log">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="HostName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Request" Type="int" />
+    <Property Name="ErrorMessage" Type="nvarchar(max)" />
+    <Property Name="CreateDate" Type="nvarchar" MaxLength="50" />
+  </EntityType>
   <EntityType Name="signature">
     <Key>
       <PropertyRef Name="uuid" />
@@ -30,6 +40,7 @@
   </EntityType>
   <EntityContainer Name="caProjectModelStoreContainer">
     <EntitySet Name="cert" EntityType="Self.cert" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Error_Log" EntityType="Self.Error_Log" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="signature" EntityType="Self.signature" Schema="dbo" store:Type="Tables" />
   </EntityContainer>
 </Schema>
