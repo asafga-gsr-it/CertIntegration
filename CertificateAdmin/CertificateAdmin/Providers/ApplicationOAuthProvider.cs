@@ -71,7 +71,7 @@ namespace CertificateAdmin.Providers
             context.TryGetFormCredentials(out clientId, out clientSecret);
 
             Database db = new Database();
-            bool result=db.CheckIfMachineExists(clientSecret, clientId);
+            bool result=db.CheckIfMachineExists(clientId, clientSecret);
             
             if (result==false)
             {

@@ -113,8 +113,8 @@ namespace CertificateAdmin
                 cert cetificate = context.certs.FirstOrDefault(r => r.HostName == hostname);
                 if (cetificate != null)
                 {
-
-                   if (cetificate.Issuedby==null)
+                    
+                    if (cetificate.Issuedby==null)
                    {
                         return 1;
                     }

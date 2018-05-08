@@ -43,7 +43,8 @@ namespace CertificateAdmin
                /*Check if there is allready request for the hostname so we dont need to create new one*/
               
                 if (db.CheckIfCertificateExists(hostName)==1)
-                {                  
+                {
+                    
                     return "Exsits";
                 }
 
