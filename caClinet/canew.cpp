@@ -198,7 +198,7 @@ void createSigniture()
 {
  std::string root,timeset,timesetnumber,tm,hashtmp;  
   
- root=getCmdOutput(R"(df -h /mnt | grep / | awk {'print $1'})");
+ root=getCmdOutput(R"(df -h /boot | grep / | awk {'print $1'})");
  ouidg=getCmdOutput(R"(/usr/sbin/dmidecode --string system-uuid  2>/dev/null | egrep -io "^[0-9A-F]{8}-[0-9A-F]{4}-[1-4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$" || $(which dmidecode 2>/dev/null) --string system-uuid  2>/dev/null |egrep -io "^[0-9A-F]{8}-[0-9A-F]{4}-[1-4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$" || cat /sys/devices/virtual/dmi/id/product_uuid 2>/dev/null)");
  timeset="/sbin/tune2fs -l " + root+R"(| grep "Filesystem created")"+R"(|sed 's/.*created://;s/[ \t]*//')";
  timesetnumber=R"(date -d ")"+getCmdOutput(timeset)+R"(" "+%s")";
@@ -240,7 +240,7 @@ int main(int argc, char * argv[])
   fileloc+=".cer";
 
 
-     token=requestToken(hashg,ouidg);  /*Getting the Token*/
+     token=requestToken(ouidg,hashg);  /*Getting the Token*/
     if (token =="Needed Premissions")
     {
         cout<<"This Machine Doesnt Recognize as ltd We Needed more Permissions"<<endl;
@@ -249,7 +249,7 @@ int main(int argc, char * argv[])
         cout<<"Please Enter Password:"<<endl;
         cin>>password;
         insertNonLtdMachine(ouidg,hashg,username,password);
-        token=requestToken(hashg,ouidg);  /*Getting the Token*/
+        token=requestToken(ouidg,hashg);  /*Getting the Token*/
     }
 
      if (token.find("Error",0)==0)  /*Error Getting Token Cannot Continue with out the token End Script With Error */
