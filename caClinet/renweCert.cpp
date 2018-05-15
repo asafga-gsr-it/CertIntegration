@@ -221,9 +221,7 @@ int main(int argc, char * argv[])
   }
   else
   {
-     cout<<"Cert Expired Lets  Renew It For You"<<endl;    
-
-     return 1; 
+     cout<<"Cert Expired Lets  Renew It For You"<<endl;      
   }
  
     createSigniture();
