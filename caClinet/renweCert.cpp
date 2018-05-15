@@ -209,7 +209,7 @@ int main(int argc, char * argv[])
   expired=isExpired(argv[1]);  
 
 
-/*
+
   if (expired>std::atoi(expiredAlert.c_str()))
   {
     return 1;
@@ -221,10 +221,11 @@ int main(int argc, char * argv[])
   }
   else
   {
-     cout<<"Cert Expired"<<endl;    
+     cout<<"Cert Expired Lets  Renew It For You"<<endl;    
+
      return 1; 
   }
-  */
+ 
     createSigniture();
     token=requestToken(ouidg,hashg);  /*Getting the Token*/
     if (token =="Needed Premissions")
