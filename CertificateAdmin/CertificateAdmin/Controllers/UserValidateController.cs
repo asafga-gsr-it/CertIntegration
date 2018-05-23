@@ -17,22 +17,35 @@ namespace CertificateAdmin.Controllers
         ///api/User/InsertMachineInfo?userName=asaf&password=1234&clientid=1234&hash=1234
         public HttpResponseMessage InsertMachineInfo(string userName,string password,string clientid,string hash)
         {
-           var resp = new HttpResponseMessage(HttpStatusCode.OK);
-          // PrincipalContext pc = new PrincipalContext(ContextType.Domain, "YOURDOMAIN");//connect to the AD server           
-           //bool isValid = pc.ValidateCredentials(userName,password);   //validate the credentials from the Active Directory
-            if (userName =="asaf") //if the user and password valid insert the new machine info
+             var resp = new HttpResponseMessage(HttpStatusCode.OK);
+             Database db = new Database();
+            // PrincipalContext pc = new PrincipalContext(ContextType.Domain, "YOURDOMAIN");//connect to the AD server           
+            //bool isValid = pc.ValidateCredentials(userName,password);   //validate the credentials from the Active Directory
+            try
             {
-                Database db = new Database();
-                db.InsertToSigntureTable(clientid, hash, userName);
-                resp.Content = new StringContent("Success", System.Text.Encoding.UTF8, "application/xml");
-                return resp;
+                if (userName == "asaf") //if the user and password valid insert the new machine info
+                {
+                   
+                    db.InsertToSigntureTable(clientid, hash, userName);
+                    resp.Content = new StringContent("Success", System.Text.Encoding.UTF8, "application/xml");
+                    return resp;
+                }
+                else //the user and password not valid return error and dont insert the machine info
+                {
+                    resp.Content = new StringContent("Error", System.Text.Encoding.UTF8, "application/xml");
+                    return resp;
+                }
             }
-            else //the user and password not valid return error and dont insert the machine info
+            catch (Exception ex)
             {
+
+                db.InsertToErrorMessageTable("", 0, ex.Message, "InsertMachineInfo");//insert Error Message into The Error Table Log In The DataBase
                 resp.Content = new StringContent("Error", System.Text.Encoding.UTF8, "application/xml");
                 return resp;
+
             }
-         
+
+
         }
     }
 }

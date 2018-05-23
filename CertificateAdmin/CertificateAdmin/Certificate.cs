@@ -86,7 +86,7 @@ namespace CertificateAdmin
             catch (Exception ex)
             {
                 Database db = new Database();
-                db.InsertToErrorMessageTable(hostName,0,ex.Message);//insert Error Message into The Error Table Log In The DataBase
+                db.InsertToErrorMessageTable(hostName,0,ex.Message, "CreateCertifcate");//insert Error Message into The Error Table Log In The DataBase
                 return "Error"+ex.Message;
             }
         }
@@ -118,7 +118,7 @@ namespace CertificateAdmin
             {
                 errorStatus = ex.Message;
                 Database db = new Database();
-                db.InsertToErrorMessageTable(hostname,0, ex.Message);//insert Error Message into The Error Table Log In The DataBase
+                db.InsertToErrorMessageTable(hostname,0, ex.Message, "SubmitRequest");//insert Error Message into The Error Table Log In The DataBase
                 return 0;
             }
      }
@@ -156,7 +156,7 @@ namespace CertificateAdmin
             catch (Exception ex)
             {
                 Database db = new Database();
-                db.InsertToErrorMessageTable(hostname, requestID, ex.Message);//insert Error Message into The Error Table Log In The DataBase
+                db.InsertToErrorMessageTable(hostname, requestID, ex.Message,"RetrieveRequestStatus");//insert Error Message into The Error Table Log In The DataBase
                 return -2;
             }
         }
@@ -197,7 +197,7 @@ namespace CertificateAdmin
             catch (Exception ex)
             {
                    
-                db.InsertToErrorMessageTable("", requestID, ex.Message);//insert Error Message into The Error Table Log In The DataBase
+                db.InsertToErrorMessageTable("", requestID, ex.Message, "GetCertificate");//insert Error Message into The Error Table Log In The DataBase
                 return "error"+ex.Message;
             }
         }
@@ -215,7 +215,7 @@ namespace CertificateAdmin
 
             catch (Exception ex)
             {
-                db.InsertToErrorMessageTable(hostname,0, ex.Message);//insert Error Message into The Error Table Log In The DataBase
+                db.InsertToErrorMessageTable(hostname,0, ex.Message, "UnlockCertifcate");//insert Error Message into The Error Table Log In The DataBase
                 status = ex.Message;
                 return -1;
             }
@@ -265,7 +265,7 @@ namespace CertificateAdmin
             {
                 status = ex.Message;
                 Database db = new Database();
-                db.InsertToErrorMessageTable("", reqid, ex.Message);//insert Error Message into The Error Table Log In The DataBase
+                db.InsertToErrorMessageTable("", reqid, ex.Message, "RenewCert");//insert Error Message into The Error Table Log In The DataBase
                 return 1;
             }
 
@@ -308,7 +308,7 @@ namespace CertificateAdmin
             {
 
                 Database db = new Database();
-                db.InsertToErrorMessageTable("",0, ex.Message);//insert Error Message into The Error Table Log In The DataBase
+                db.InsertToErrorMessageTable("",0, ex.Message, "InstallCert");//insert Error Message into The Error Table Log In The DataBase
                 return 1;
 
             }
@@ -331,7 +331,7 @@ namespace CertificateAdmin
             catch (Exception ex)
             {
                 Database db = new Database();
-                db.InsertToErrorMessageTable("", 0, ex.Message);//insert Error Message into The Error Table Log In The DataBase
+                db.InsertToErrorMessageTable("", 0, ex.Message, "RevokeCertificate");//insert Error Message into The Error Table Log In The DataBase
                 return 1;
             }
         }

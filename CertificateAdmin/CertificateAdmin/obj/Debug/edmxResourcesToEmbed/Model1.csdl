@@ -1,46 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="caProjectModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-  <EntityType Name="cert">
-    <Key>
-      <PropertyRef Name="HostName" />
-    </Key>
-    <Property Name="HostName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="RequestId" Type="Int32" Nullable="false" />
-    <Property Name="status" Type="Int32" Nullable="false" />
-    <Property Name="CreationDate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="ExpiredDate" Type="DateTime" Precision="3" />
-    <Property Name="CertFlag" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
-    <Property Name="Issuedby" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="serialnumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-  </EntityType>
   <EntityContainer Name="caProjectEntities" annotation:LazyLoadingEnabled="true">
-    <EntitySet Name="cert" EntityType="Self.cert" />
-    <EntitySet Name="signature" EntityType="caProjectModel.signature" />
     <EntitySet Name="Error_Log" EntityType="caProjectModel.Error_Log" />
+    <EntitySet Name="cert" EntityType="caProjectModel.cert" />
+    <EntitySet Name="signature" EntityType="caProjectModel.signature" />
   </EntityContainer>
-  <EntityType Name="signature">
-    <Key>
-      <PropertyRef Name="uuid" />
-    </Key>
-    <Property Name="uuid" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-    <Property Name="fscadate" Type="Int32" />
-    <Property Name="hash" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
-    <Property Name="timestamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-    <Property Name="ldtdisk" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-    <Property Name="hwaddr" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-    <Property Name="hostname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="signtime" Type="DateTime" Precision="0" />
-    <Property Name="host_time" Type="DateTime" Precision="0" />
-    <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-  </EntityType>
   <EntityType Name="Error_Log">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="HostName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="HostName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="Request" Type="Int32" />
-    <Property Name="ErrorMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="CreateDate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ErrorMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="CreateDate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="functionName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="cert">
+    <Key>
+      <PropertyRef Name="HostName" />
+    </Key>
+    <Property Name="HostName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="RequestId" Type="Int32" Nullable="false" />
+    <Property Name="status" Type="Int32" Nullable="false" />
+    <Property Name="CreationDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ExpiredDate" Type="DateTime" Precision="3" />
+    <Property Name="CertFlag" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Issuedby" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="serialnumber" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="signature">
+    <Key>
+      <PropertyRef Name="uuid" />
+    </Key>
+    <Property Name="uuid" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="fscadate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="hash" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+    <Property Name="ldtdisk" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="hwaddr" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="hostname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="signtime" Type="DateTime" Precision="3" />
+    <Property Name="host_time" Type="DateTime" Precision="3" />
+    <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
   </EntityType>
 </Schema>

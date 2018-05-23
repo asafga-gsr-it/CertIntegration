@@ -15,7 +15,7 @@ namespace CertificateAdmin
     public partial class signature
     {
         public string uuid { get; set; }
-        public Nullable<int> fscadate { get; set; }
+        public string fscadate { get; set; }
         public string hash { get; set; }
         public byte[] timestamp { get; set; }
         public string ldtdisk { get; set; }

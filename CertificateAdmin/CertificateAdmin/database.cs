@@ -259,7 +259,7 @@ namespace CertificateAdmin
         }
 
         // Inserts Error Message
-        public void InsertToErrorMessageTable(string hostname,int requestid,string errorMessage)
+        public void InsertToErrorMessageTable(string hostname,int requestid,string errorMessage,string functionName)
         {
             using (caProjectEntities context = new caProjectEntities())
             {
@@ -268,7 +268,8 @@ namespace CertificateAdmin
                     ErrorMessage = errorMessage,
                     Request = requestid,
                     CreateDate =DateTime.Now.ToString(),
-                    HostName = hostname
+                    HostName = hostname,
+                    functionName= functionName
 
                 };
                 context.Error_Logs.Add(erroLog);

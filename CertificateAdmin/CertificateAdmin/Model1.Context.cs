@@ -25,8 +25,8 @@ namespace CertificateAdmin
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Error_Log> Error_Logs { get; set; }
         public virtual DbSet<cert> certs { get; set; }
         public virtual DbSet<signature> signatures { get; set; }
-        public virtual DbSet<Error_Log> Error_Logs { get; set; }
     }
 }

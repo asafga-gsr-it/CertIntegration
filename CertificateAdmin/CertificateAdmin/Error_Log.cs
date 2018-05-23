@@ -19,5 +19,6 @@ namespace CertificateAdmin
         public Nullable<int> Request { get; set; }
         public string ErrorMessage { get; set; }
         public string CreateDate { get; set; }
+        public string functionName { get; set; }
     }
 }

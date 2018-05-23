@@ -5,9 +5,9 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="27eebaec8a774f70b1cea8a1a0d5a4bc" Name="Diagram1">
-        <EntityTypeShape EntityType="caProjectModel.cert" Width="1.5" PointX="0.875" PointY="0.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="caProjectModel.signature" Width="1.5" PointX="2.5" PointY="0.5" />
         <EntityTypeShape EntityType="caProjectModel.Error_Log" Width="1.5" PointX="4.125" PointY="0.5" />
+        <EntityTypeShape EntityType="caProjectModel.cert" Width="1.5" PointX="0.875" PointY="0.5" />
+        <EntityTypeShape EntityType="caProjectModel.signature" Width="1.5" PointX="2.5" PointY="0.5" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

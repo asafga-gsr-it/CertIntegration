@@ -1,17 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="caProjectModelStoreContainer" CdmEntityContainer="caProjectEntities">
+    <EntitySetMapping Name="Error_Log">
+      <EntityTypeMapping TypeName="caProjectModel.Error_Log">
+        <MappingFragment StoreEntitySet="Error_Log">
+          <ScalarProperty Name="functionName" ColumnName="functionName" />
+          <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+          <ScalarProperty Name="ErrorMessage" ColumnName="ErrorMessage" />
+          <ScalarProperty Name="Request" ColumnName="Request" />
+          <ScalarProperty Name="HostName" ColumnName="HostName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="cert">
       <EntityTypeMapping TypeName="caProjectModel.cert">
         <MappingFragment StoreEntitySet="cert">
-          <ScalarProperty Name="HostName" ColumnName="HostName" />
-          <ScalarProperty Name="RequestId" ColumnName="RequestId" />
-          <ScalarProperty Name="status" ColumnName="status" />
-          <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
-          <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
-          <ScalarProperty Name="CertFlag" ColumnName="CertFlag" />
-          <ScalarProperty Name="Issuedby" ColumnName="Issuedby" />
           <ScalarProperty Name="serialnumber" ColumnName="serialnumber" />
+          <ScalarProperty Name="Issuedby" ColumnName="Issuedby" />
+          <ScalarProperty Name="CertFlag" ColumnName="CertFlag" />
+          <ScalarProperty Name="ExpiredDate" ColumnName="ExpiredDate" />
+          <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="RequestId" ColumnName="RequestId" />
+          <ScalarProperty Name="HostName" ColumnName="HostName" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -28,17 +40,6 @@
           <ScalarProperty Name="hash" ColumnName="hash" />
           <ScalarProperty Name="fscadate" ColumnName="fscadate" />
           <ScalarProperty Name="uuid" ColumnName="uuid" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Error_Log">
-      <EntityTypeMapping TypeName="caProjectModel.Error_Log">
-        <MappingFragment StoreEntitySet="Error_Log">
-          <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-          <ScalarProperty Name="ErrorMessage" ColumnName="ErrorMessage" />
-          <ScalarProperty Name="Request" ColumnName="Request" />
-          <ScalarProperty Name="HostName" ColumnName="HostName" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

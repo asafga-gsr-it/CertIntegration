@@ -62,7 +62,7 @@ namespace CertificateAdmin
         public int CreateCertifcate(string hostname)
         {
             string CertID;
-            int requestID;
+            int requestID=0;
             Certificate cert = new Certificate();
 
             try
@@ -87,6 +87,8 @@ namespace CertificateAdmin
             }
             catch (Exception ex)
             {
+                Database db = new Database();
+                db.InsertToErrorMessageTable(hostname, requestID, ex.Message, "CreateCertifcateController");//insert Error Message into The Error Table Log In The DataBase
                 Console.Write(ex.Message);
                 return 0;
             }
@@ -107,6 +109,8 @@ namespace CertificateAdmin
             }
             catch (Exception ex)
             {
+                Database db = new Database();
+                db.InsertToErrorMessageTable(hostname,0, ex.Message, "UnlockCertificateController");//insert Error Message into The Error Table Log In The DataBase
                 Console.Write(ex.Message);
                 return -1;
             }
@@ -119,12 +123,13 @@ namespace CertificateAdmin
         [HttpGet]
         public int RenewCertificate(string hostname)
         {
-            int reqid;
+            int reqid=0;
             string cerificate;
+            Database db = new Database();
             try
             {
 
-                Database db = new Database();
+               
                 var certReturn = db.ReturnCertificateInformation(hostname);
                 Certificate cert = new Certificate();
                 cerificate = cert.GetCertificate(certReturn.RequestId);
@@ -135,6 +140,7 @@ namespace CertificateAdmin
             }
             catch (Exception ex)
             {
+                db.InsertToErrorMessageTable(hostname,reqid, ex.Message, "RenewCertificateController");//insert Error Message into The Error Table Log In The DataBase
                 Console.Write(ex.Message);
                 return 0;
             }
@@ -147,12 +153,13 @@ namespace CertificateAdmin
         [HttpPost]
         public HttpResponseMessage RenewAllCertificates()
         {
-            int reqid;
+            int reqid=0;
+            Database db = new Database();
             try
             {
                 var jsonObject = new JObject();
                 var resp = new HttpResponseMessage(HttpStatusCode.OK);
-                Database db = new Database();
+              
 
                 List<cert> certs = db.GetAllExpiredCertificates();
                 if (certs.Count>0)
@@ -183,6 +190,7 @@ namespace CertificateAdmin
             }
             catch (Exception ex)
             {
+                db.InsertToErrorMessageTable("",0, ex.Message, "RenewAllCertificatesController");//insert Error Message into The Error Table Log In The DataBase
                 var resp = new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
                 {
                     Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(ex.Message), System.Text.Encoding.UTF8, "application/json")
@@ -211,6 +219,7 @@ namespace CertificateAdmin
 
             catch (Exception ex)
             {
+                db.InsertToErrorMessageTable(hostname, 0, ex.Message, "RevokCertifcateController");//insert Error Message into The Error Table Log In The DataBase
                 return ex.Message;
             }
 
@@ -233,6 +242,8 @@ namespace CertificateAdmin
 
             catch (Exception ex)
             {
+                Database db = new Database();
+                db.InsertToErrorMessageTable(hostname, 0, ex.Message, "RecreateCertifcateController");//insert Error Message into The Error Table Log In The DataBase
                 Console.Write(ex.Message);
                 return 0;
             }
