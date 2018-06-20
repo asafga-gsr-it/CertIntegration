@@ -1,0 +1,6 @@
+default['common']['yum']['curl']= 'curl-devel'
+default['common']['yum']['gcc']= 'gcc-c++'
+default['common']['yum']['jansson']= 'jansson-devel'
+default['common']['ca']['url']='/home/CertPath/'
+default['common']['ca']['user']='c5264782'
+default['common']['ca']['conffile']='/home/c5264782/caClinet/caw.conf'

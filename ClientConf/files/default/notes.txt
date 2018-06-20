@@ -1,0 +1,4 @@
+SUSE - zabbix-agent.conf
+UBUNTI - zabbix_agent.conf
+RHEL -  zabbix_agent.conf
+Debian - zabbix_agent.conf 
