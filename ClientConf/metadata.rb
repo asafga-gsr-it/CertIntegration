@@ -1,4 +1,4 @@
-name             'Install'
+name             'ClientConf'
 maintainer       'SAP'
 maintainer_email 'YOUR_EMAIL'
 license          'All rights reserved'
