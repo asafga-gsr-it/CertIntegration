@@ -1,6 +1,6 @@
-# Cookbook Name:: zabbix_agent
+# Cookbook Name:: ClientConf
 # Recipe:: default
-# Recipe to install and configure Zabbix agent
+# Recipe to install and configure Ca Client
 
 
 gcc=node['common']['yum']['gcc']
